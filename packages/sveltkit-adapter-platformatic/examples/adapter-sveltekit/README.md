@@ -1,5 +1,15 @@
 # Example: sveltekit-adapter-platformatic
 
-Uses the `sveltekit-adapter-platformatic` package to generate a build that can run on the Platformatic Runtime.
+Uses the `sveltekit-adapter-platformatic` package to create a build that runs on the Platformatic runtime. The app contains two demonstration APIs:
 
-Configure the adapter in `svelte.config.js` and run `npm run build` to produce a `build/` directory.
+- `POST /api/add` – adds two numbers sent in the request body
+- `GET /api/random-number` – returns a random number between optional `min` and `max` query parameters
+
+## Usage
+
+```bash
+npm install
+npm run build
+```
+
+The generated `.svelte-kit/platformatic` directory can be served by the `@platformatic/sveltekit` plugin.

@@ -1,5 +1,16 @@
 # Example: @platformatic/sveltekit
 
-Minimal configuration for running a SvelteKit application inside the Platformatic runtime using the `@platformatic/sveltekit` plugin.
+Demonstrates running a SvelteKit application inside the Platformatic runtime using the `@platformatic/sveltekit` plugin and the `@sveltejs/adapter-platformatic` adapter. The app exposes two simple APIs:
 
-The `platformatic.sveltekit.json` file configures the server and enables dev mode.
+- `POST /api/add` – adds two numbers provided in the request body
+- `GET /api/random-number` – returns a random number between the optional `min` and `max` query parameters
+
+## Usage
+
+```bash
+npm install
+npm run build
+platformatic start
+```
+
+The server configuration is defined in `platformatic.sveltekit.json`.
