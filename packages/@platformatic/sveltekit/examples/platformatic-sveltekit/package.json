@@ -3,6 +3,6 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@platformatic/sveltekit": "../../packages/@platformatic/sveltekit"
+    "@platformatic/sveltekit": "file:../.."
   }
 }

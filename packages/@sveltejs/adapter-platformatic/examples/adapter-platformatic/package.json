@@ -3,6 +3,6 @@
   "private": true,
   "type": "module",
   "devDependencies": {
-    "@sveltejs/adapter-platformatic": "../../packages/@sveltejs/adapter-platformatic"
+		"@sveltejs/adapter-platformatic": "file:../.."
   }
 }

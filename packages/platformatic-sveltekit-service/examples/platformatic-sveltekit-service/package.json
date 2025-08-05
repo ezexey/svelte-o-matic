@@ -3,6 +3,6 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "platformatic-sveltekit-service": "../../packages/platformatic-sveltekit-service"
+    "platformatic-sveltekit-service": "file:../.."
   }
 }
