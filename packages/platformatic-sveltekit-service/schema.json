@@ -1,0 +1,10 @@
+{
+  "$id": "https://schemas.platformatic.dev/@platformatic/sveltekit/0.1.0.json",
+  "type": "object",
+  "properties": {
+    "basePath": {
+      "type": "string",
+      "description": "Mount point for the SvelteKit app"
+    }
+  }
+}

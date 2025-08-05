@@ -1,0 +1,10 @@
+{
+  "name": "@platformatic/adapter-sveltekit",
+  "version": "0.1.0",
+  "main": "index.js",
+  "keywords": ["sveltekit", "adapter", "platformatic"],
+  "peerDependencies": {
+    "@sveltejs/kit": "*",
+    "fs-extra": "^10.0.0"
+  }
+}
