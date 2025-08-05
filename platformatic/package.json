@@ -7,12 +7,13 @@
     "clean": "rm -fr ./dist"
   },
   "devDependencies": {
-    "fastify": "^5.0.0",
     "borp": "^0.20.0",
+    "fastify": "^5.0.0",
     "typescript": "^5.5.4"
   },
   "dependencies": {
     "@platformatic/runtime": "^2.73.1",
+    "@platformatic/vite": "^2.73.1",
     "platformatic": "^2.73.1",
     "wattpm": "^2.73.1"
   },

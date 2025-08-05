@@ -1,0 +1,10 @@
+{
+  "$schema": "https://schemas.platformatic.dev/@platformatic/vite/2.44.5.json",
+  "application": {
+    "outputDirectory": ".svelte-kit",
+    "include": [
+      ".svelte-kit"
+    ],
+    "basePath": "/sveltelicious"
+  }
+}

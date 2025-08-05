@@ -2,14 +2,11 @@
   "name": "composer",
   "scripts": {
     "start": "platformatic start",
-    "test": "borp",
-    "clean": "rm -fr ./dist",
-    "build": "platformatic compile"
+    "test": "borp"
   },
   "devDependencies": {
     "fastify": "^5.0.0",
-    "borp": "^0.20.0",
-    "typescript": "^5.5.4"
+    "borp": "^0.20.0"
   },
   "dependencies": {
     "@platformatic/composer": "^2.73.1"
