@@ -1,13 +1,25 @@
 {
   "name": "@platformatic/sveltekit",
-  "version": "0.1.0",
-  "main": "lib/index.js",
+  "version": "1.0.0",
+  "description": "SvelteKit service type for Platformatic Runtime",
+  "main": "index.js",
   "type": "module",
-  "files": ["lib", "schema.json"],
-  "dependencies": {
-    "fastify": "^4.0.0"
+  "exports": {
+    ".": "./index.js",
+    "./schema": "./lib/schema.js",
+    "./generator": "./lib/generator.js"
   },
   "scripts": {
-    "test": "node --test"
+    "test": "tap test/**/*.test.js"
+  },
+  "dependencies": {
+    "@platformatic/service": "^2.73.1",
+    "@platformatic/utils": "^2.73.1",
+    "fastify-plugin": "^5.0.1",
+    "semver": "^7.7.2"
+  },
+  "devDependencies": {
+    "@sveltejs/kit": "^2.27.0",
+    "tap": "^21.1.0"
   }
 }
