@@ -30,12 +30,6 @@ export const schema = {
           default: false
         }
       }
-    },
-    watch: {
-      anyOf: [
-        { type: 'boolean' },
-        { type: 'object' }
-      ]
     }
   },
   required: ['server'],

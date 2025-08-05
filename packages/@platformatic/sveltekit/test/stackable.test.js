@@ -1,6 +1,6 @@
 // test/stackable.test.js
-import { test } from 'tap'
 import Fastify from 'fastify'
+import { test } from 'tap'
 import { join } from 'path'
 import { mkdtempSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
