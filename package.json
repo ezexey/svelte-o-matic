@@ -1,7 +1,7 @@
 {
   "name": "svelte-o-matic",
   "private": true,
-  "workspaces": ["packages/*/*"],
+  "workspaces": ["packages/*/*", "packages/*"],
   "devDependencies": {
     "typescript": "^5.0.0"
   },
