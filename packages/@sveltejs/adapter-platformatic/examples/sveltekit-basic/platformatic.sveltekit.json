@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.platformatic.dev/sveltekit/1.0.0.json",
+  "server": {
+    "hostname": "{PLT_SERVER_HOSTNAME}",
+    "port": "{PORT}"
+  },
+  "sveltekit": {
+    "buildDir": ".svelte-kit/platformatic"
+  },
+  "plugins": {
+    "paths": [
+      {
+        "path": "./.svelte-kit/platformatic/plugin.js"
+      }
+    ]
+  }
+}
