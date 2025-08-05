@@ -1,11 +1,39 @@
 {
   "name": "@sveltejs/adapter-platformatic",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "SvelteKit adapter for deployment to Platformatic Runtime",
   "main": "index.js",
   "type": "module",
-  "files": ["index.js"],
-  "scripts": {
-    "test": "node --test"
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    },
+    "./package.json": "./package.json"
   },
-  "dependencies": {}
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts", 
+    "templates"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "check": "tsc"
+  },
+  "peerDependencies": {
+    "@sveltejs/kit": "^1.0.0 || ^2.0.0"
+  },
+  "devDependencies": {
+    "@sveltejs/kit": "^2.0.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "keywords": [
+    "svelte",
+    "sveltekit", 
+    "adapter",
+    "platformatic"
+  ]
 }

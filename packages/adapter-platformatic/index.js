@@ -1,53 +1,109 @@
-import fs from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, writeFileSync } from 'fs';
+import { join, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-/**
- * SvelteKit adapter that outputs a build compatible with the Platformatic
- * runtime. The generated build contains an `index.js` file that listens on the
- * port provided via the `PORT` environment variable and a `handler.js` that
- * exposes the request handler.
- */
-export default function adapter (options = {}) {
-  const out = options.out ?? 'build';
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+
+/** @type {import('./index.d.ts').default} */
+export default function (options = {}) {
+  const { 
+    out = '.svelte-kit/platformatic',
+    serviceId = 'sveltekit-app',
+    includeConfig = true,
+    configPath = 'platformatic.sveltekit.json'
+  } = options;
 
   return {
     name: '@sveltejs/adapter-platformatic',
-    async adapt (builder) {
-      const buildDir = join(builder.getBuildDirectory(), out);
-      fs.rmSync(buildDir, { recursive: true, force: true });
 
-      const clientDir = join(buildDir, 'client');
-      const serverDir = join(buildDir, 'server');
-      const prerenderedDir = join(buildDir, 'prerendered');
+    async adapt(builder) {
+      const tmp = builder.getBuildDirectory('adapter-platformatic');
+      
+      builder.rimraf(out);
+      builder.mkdirp(out);
 
-      builder.log.minor('writing client');
-      await builder.writeClient(clientDir);
+      // Write client-side assets
+      const clientDir = `${out}/client`;
+      builder.writeClient(clientDir);
 
-      builder.log.minor('writing server');
-      await builder.writeServer(serverDir);
+      // Write server files to temp
+      const serverDir = `${tmp}/server`;
+      builder.writeServer(serverDir);
 
-      builder.log.minor('writing prerendered');
-      await builder.writePrerendered(prerenderedDir);
+      // Write prerendered pages
+      const prerenderedDir = `${out}/prerendered`;
+      builder.writePrerendered(prerenderedDir);
 
-      const handlerCode = `import { Server } from './server/index.js';
-import { manifest } from './server/manifest.js';
+      // Generate manifest
+      writeFileSync(
+        `${out}/manifest.js`,
+        `export const manifest = ${builder.generateManifest({ 
+          relativePath: './',
+          routes: builder.routes 
+        })};`
+      );
 
-const server = new Server(manifest);
-export async function handler (req, res) {
-  const result = await server.respond(req, { getClientAddress: () => req.socket.remoteAddress });
-  await server.handle(result, res);
-}`;
-      fs.writeFileSync(join(buildDir, 'handler.js'), handlerCode);
+      // Generate handler module
+      const handlerTemplate = readFileSync(
+        join(__dirname, 'templates', 'handler.js'),
+        'utf-8'
+      );
+      
+      writeFileSync(
+        `${out}/handler.js`,
+        handlerTemplate
+          .replace('{{SERVER_DIR}}', `./${resolve(serverDir)}`)
+          .replace('{{MANIFEST}}', './manifest.js')
+      );
 
-      const indexCode = `import { handler } from './handler.js';
-import http from 'node:http';
+      // Generate Fastify plugin
+      const pluginTemplate = readFileSync(
+        join(__dirname, 'templates', 'plugin.js'),
+        'utf-8'
+      );
+      
+      writeFileSync(
+        `${out}/plugin.js`, 
+        pluginTemplate
+          .replace('{{CLIENT_DIR}}', './client')
+          .replace('{{PRERENDERED_DIR}}', './prerendered')
+      );
 
-const server = http.createServer((req, res) => handler(req, res));
-const port = process.env.PORT || 3000;
-server.listen(port, '0.0.0.0', () => {
-  console.log('listening on', port);
-});`;
-      fs.writeFileSync(join(buildDir, 'index.js'), indexCode);
+      // Generate platformatic config if requested
+      if (includeConfig) {
+        const configTemplate = {
+          "$schema": "https://schemas.platformatic.dev/sveltekit/1.0.0.json",
+          "server": {
+            "hostname": "{PLT_SERVER_HOSTNAME}",
+            "port": "{PORT}",
+            "logger": {
+              "level": "{PLT_SERVER_LOGGER_LEVEL}"
+            }
+          },
+          "sveltekit": {
+            "buildDir": out
+          },
+          "plugins": {
+            "paths": [{
+              "path": `./${out}/plugin.js`
+            }]
+          }
+        };
+
+        writeFileSync(
+          join(builder.getServerDirectory(), '..', configPath),
+          JSON.stringify(configTemplate, null, 2)
+        );
+      }
+
+      // Copy server files
+      builder.copy(serverDir, `${out}/server`);
+
+      builder.log.success('Platformatic adapter complete');
+    },
+
+    supports: {
+      read: () => true
     }
   };
 }
