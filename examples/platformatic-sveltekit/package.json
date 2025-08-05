@@ -1,0 +1,8 @@
+{
+  "name": "example-platformatic-sveltekit",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@platformatic/sveltekit": "../../packages/@platformatic/sveltekit"
+  }
+}

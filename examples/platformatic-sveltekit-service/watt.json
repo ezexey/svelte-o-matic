@@ -1,0 +1,4 @@
+{
+  "$schema": "https://schemas.platformatic.dev/@platformatic/sveltekit/0.1.0.json",
+  "basePath": "/"
+}

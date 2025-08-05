@@ -1,0 +1,8 @@
+{
+  "name": "example-adapter-sveltekit",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "sveltekit-adapter-platformatic": "../../packages/sveltkit-adapter-platformatic"
+  }
+}
