@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "main": "src/index.js",
   "keywords": ["platformatic", "sveltekit", "plugin", "service"],
+  "scripts": {
+    "test": "node --test"
+  },
   "peerDependencies": {
     "@platformatic/runtime": "^2.0.0"
   }
