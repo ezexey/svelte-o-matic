@@ -1,0 +1,10 @@
+{
+  "name": "@platformatic/sveltekit",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "type": "module",
+  "files": ["lib", "schema.json"],
+  "dependencies": {
+    "fastify": "^4.0.0"
+  }
+}
