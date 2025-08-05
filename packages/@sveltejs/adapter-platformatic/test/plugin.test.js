@@ -1,35 +1,17 @@
-// test/plugin.test.js
-import { describe, it, expect, vi } from 'vitest'
-import Fastify from 'fastify'
+import { describe, it, expect } from 'vitest'
+import { readFileSync } from 'fs'
+import { join, dirname } from 'path'
+import { fileURLToPath } from 'url'
 
-describe('plugin integration', () => {
-  it('registers static file handlers', async () => {
-    const fastify = Fastify()
-    
-    // Mock platformatic context
-    fastify.decorate('platformatic', {
-      serviceId: 'test-service'
-    })
-    
-    // Would test actual plugin here
-    // For now, just verify fastify setup
-    expect(fastify.platformatic.serviceId).toBe('test-service')
-  })
-  
-  it('handles all routes with catch-all', async () => {
-    const fastify = Fastify()
-    
-    // Register test route
-    fastify.all('/*', async (request, reply) => {
-      return { route: request.url }
-    })
-    
-    const response = await fastify.inject({
-      method: 'GET',
-      url: '/any/path'
-    })
-    
-    expect(response.statusCode).toBe(200)
-    expect(response.json()).toEqual({ route: '/any/path' })
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
+describe('plugin template', () => {
+  it('contains client and prerendered placeholders', () => {
+    const template = readFileSync(
+      join(__dirname, '../templates/plugin.js'),
+      'utf-8'
+    )
+    expect(template).toContain('{{CLIENT_DIR}}')
+    expect(template).toContain('{{PRERENDERED_DIR}}')
   })
 })

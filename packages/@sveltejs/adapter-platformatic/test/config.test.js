@@ -12,6 +12,7 @@ describe('config generation', () => {
   let mockBuilder
   
   beforeEach(() => {
+    vi.clearAllMocks()
     mockBuilder = {
       log: { success: vi.fn() },
       routes: [],
@@ -25,7 +26,7 @@ describe('config generation', () => {
       generateManifest: vi.fn(() => '{}'),
       copy: vi.fn()
     }
-    
+
     // Mock template files
     readFileSync.mockImplementation((path) => {
       if (path.includes('handler.js')) {
@@ -36,6 +37,7 @@ describe('config generation', () => {
       }
       return ''
     })
+    vi.clearAllMocks()
   })
   
   it('generates config by default', async () => {

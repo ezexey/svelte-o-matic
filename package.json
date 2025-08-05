@@ -1,11 +1,11 @@
 {
   "name": "svelte-o-matic",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": ["packages/*/*"],
   "devDependencies": {
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "test": "npm -ws test"
+    "test": "npm --workspaces --if-present run test"
   }
 }
