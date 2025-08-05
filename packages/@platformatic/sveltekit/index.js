@@ -1,7 +1,7 @@
 import { buildStackable } from '@platformatic/service'
 import { schema } from './lib/schema.js'
 import { Generator } from './lib/generator.js'
-import { sveltekitStackable } from './lib/stackable.js'
+import sveltekitStackable from './lib/stackable.js'
 
 export default {
   configType: 'sveltekit',

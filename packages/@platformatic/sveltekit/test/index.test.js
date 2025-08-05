@@ -1,17 +1,13 @@
 // test/index.test.js
-import { test } from 'tap'
-import { join } from 'path'
-import { fileURLToPath } from 'url'
+import test from 'node:test'
+import assert from 'node:assert/strict'
 import platformaticSvelteKit from '../index.js'
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url))
-
-test('exports required properties', async (t) => {
-  t.ok(platformaticSvelteKit.configType)
-  t.equal(platformaticSvelteKit.configType, 'sveltekit')
-  t.ok(platformaticSvelteKit.configManagerConfig)
-  t.ok(platformaticSvelteKit.schema)
-  t.ok(platformaticSvelteKit.Generator)
-  t.ok(platformaticSvelteKit.buildStackable)
-  t.ok(platformaticSvelteKit.stackable)
+test('exports required properties', () => {
+  assert.equal(platformaticSvelteKit.configType, 'sveltekit')
+  assert.ok(platformaticSvelteKit.configManagerConfig)
+  assert.ok(platformaticSvelteKit.schema)
+  assert.ok(platformaticSvelteKit.Generator)
+  assert.ok(platformaticSvelteKit.buildStackable)
+  assert.ok(platformaticSvelteKit.stackable)
 })

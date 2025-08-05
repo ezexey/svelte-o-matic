@@ -10,7 +10,7 @@
     "./generator": "./lib/generator.js"
   },
   "scripts": {
-    "test": "tap test/**/*.test.js"
+    "test": "node --test"
   },
   "dependencies": {
     "@platformatic/service": "^2.73.1",

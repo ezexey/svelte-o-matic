@@ -2,25 +2,32 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import adapter from '../index.js'
 import { join } from 'path'
+import { mkdtempSync } from 'fs'
+import { tmpdir } from 'os'
+import * as fs from 'fs'
 
 // Mock builder API
-const createMockBuilder = () => ({
-  log: {
-    success: vi.fn()
-  },
-  routes: [],
-  getBuildDirectory: vi.fn((name) => `/tmp/build/${name}`),
-  getServerDirectory: vi.fn(() => '/tmp/server'),
-  rimraf: vi.fn(),
-  mkdirp: vi.fn(),
-  writeClient: vi.fn(),
-  writeServer: vi.fn(),
-  writePrerendered: vi.fn(),
-  generateManifest: vi.fn(({ relativePath }) => 
-    JSON.stringify({ version: 1, relativePath })
-  ),
-  copy: vi.fn()
-})
+const createMockBuilder = () => {
+  const tmp = mkdtempSync(join(tmpdir(), 'adapter-build-'))
+  return {
+    tmp,
+    log: {
+      success: vi.fn()
+    },
+    routes: [],
+    getBuildDirectory: vi.fn((name) => join(tmp, name)),
+    getServerDirectory: vi.fn(() => join(tmp, 'server')),
+    rimraf: vi.fn((dir) => fs.rmSync(dir, { recursive: true, force: true })),
+    mkdirp: vi.fn((dir) => fs.mkdirSync(dir, { recursive: true })),
+    writeClient: vi.fn((dir) => fs.mkdirSync(dir, { recursive: true })),
+    writeServer: vi.fn((dir) => fs.mkdirSync(dir, { recursive: true })),
+    writePrerendered: vi.fn((dir) => fs.mkdirSync(dir, { recursive: true })),
+    generateManifest: vi.fn(({ relativePath }) =>
+      JSON.stringify({ version: 1, relativePath })
+    ),
+    copy: vi.fn((src, dest) => fs.mkdirSync(dest, { recursive: true }))
+  }
+}
 
 describe('adapter-platformatic', () => {
   let mockBuilder
@@ -69,7 +76,7 @@ describe('adapter-platformatic', () => {
     
     // Check server files
     expect(mockBuilder.writeServer).toHaveBeenCalledWith(
-      '/tmp/build/adapter-platformatic/server'
+      join(mockBuilder.tmp, 'adapter-platformatic', 'server')
     )
     
     // Check prerendered pages
@@ -79,7 +86,7 @@ describe('adapter-platformatic', () => {
     
     // Check copy operation
     expect(mockBuilder.copy).toHaveBeenCalledWith(
-      '/tmp/build/adapter-platformatic/server',
+      join(mockBuilder.tmp, 'adapter-platformatic', 'server'),
       '.svelte-kit/platformatic/server'
     )
   })

@@ -16,7 +16,8 @@ export default {
 };
 ```
 
-After running `svelte-kit build` the generated `build/` directory can be served
-by the `@platformatic/sveltekit` plugin.
+After running `svelte-kit build`, the generated `.svelte-kit/platformatic`
+directory (or the directory specified by the `out` option) can be served by the
+`@platformatic/sveltekit` plugin.
 
 This adapter is experimental and mirrors the behaviour of `@sveltejs/adapter-node`.
