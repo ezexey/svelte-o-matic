@@ -1,6 +1,5 @@
 const { spawn } = require('child_process');
 const path = require('path');
-const fastify = require('fastify');
 
 module.exports = {
   schema: path.join(__dirname, 'schema.json'),
