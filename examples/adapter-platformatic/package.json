@@ -1,0 +1,8 @@
+{
+  "name": "example-adapter-platformatic",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@sveltejs/adapter-platformatic": "../../packages/@sveltejs/adapter-platformatic"
+  }
+}

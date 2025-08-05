@@ -1,0 +1,10 @@
+{
+  "$schema": "https://schemas.platformatic.dev/sveltekit/1.0.0.json",
+  "server": {
+    "hostname": "127.0.0.1",
+    "port": 0
+  },
+  "sveltekit": {
+    "dev": true
+  }
+}
