@@ -15,5 +15,12 @@
     "port": "{PORT}"
   },
   "managementApi": "{PLT_MANAGEMENT_API}",
-  "entrypoint": "composer"
+  "entrypoint": "composer",
+  "web": [
+    {
+      "id": "oop",
+      "path": "{PLT_SERVICE_OOP_PATH}",
+      "url": "http://localhost:5173/"
+    }
+  ]
 }

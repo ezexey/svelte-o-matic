@@ -5,6 +5,6 @@
     "include": [
       ".svelte-kit"
     ],
-    "basePath": "/sveltelicious"
+    "basePath": "/oop"
   }
 }
