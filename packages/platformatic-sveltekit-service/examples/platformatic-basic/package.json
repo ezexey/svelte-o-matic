@@ -1,0 +1,11 @@
+{
+  "name": "platformatic-basic",
+  "private": true,
+  "scripts": {
+    "start": "platformatic start --config watt.json"
+  },
+  "dependencies": {
+    "@platformatic/runtime": "^2.0.0",
+    "platformatic-sveltekit-service": "file:../.."
+  }
+}
