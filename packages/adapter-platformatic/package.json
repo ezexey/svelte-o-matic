@@ -4,5 +4,9 @@
   "main": "index.js",
   "type": "module",
   "files": ["index.js"],
+  "dependencies": {},
+  "scripts": {
+    "test": "node --test"
+  }
   "dependencies": {}
 }

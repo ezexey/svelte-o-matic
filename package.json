@@ -4,5 +4,8 @@
   "workspaces": ["packages/*"],
   "devDependencies": {
     "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "test": "npm -ws test"
   }
 }
