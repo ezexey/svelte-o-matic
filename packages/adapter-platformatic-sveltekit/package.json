@@ -1,5 +1,5 @@
 {
-  "name": "@platformatic/adapter-sveltekit",
+  "name": "@platf-o-rmatic/adapter-sveltekit",
   "version": "0.1.0",
   "main": "index.js",
   "keywords": ["sveltekit", "adapter", "platformatic"],
