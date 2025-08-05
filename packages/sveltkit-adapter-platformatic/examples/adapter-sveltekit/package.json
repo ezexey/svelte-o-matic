@@ -3,6 +3,6 @@
   "private": true,
   "type": "module",
   "devDependencies": {
-    "sveltekit-adapter-platformatic": "../../packages/sveltkit-adapter-platformatic"
+    "sveltekit-adapter-platformatic": "file:../.."
   }
 }
