@@ -1,5 +1,5 @@
 {
-  "name": "@platf-o-rmatic/sveltekit",
+  "name": "platformatic-sveltekit-service",
   "version": "0.1.0",
   "main": "src/index.js",
   "keywords": ["platformatic", "sveltekit", "plugin", "service"],
