@@ -1,0 +1,8 @@
+{
+  "name": "@platformatic/adapter-sveltekit",
+  "version": "0.1.0",
+  "main": "index.js",
+  "type": "module",
+  "files": ["index.js"],
+  "dependencies": {}
+}
