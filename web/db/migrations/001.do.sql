@@ -1,7 +1,5 @@
-
-  -- Add SQL in this file to create the database tables for your API
-  CREATE TABLE IF NOT EXISTS movies (
-    id INTEGER PRIMARY KEY,
-    title TEXT NOT NULL
-  );
-  
+-- Create tenants table for multi-tenancy support
+CREATE TABLE IF NOT EXISTS tenants (
+  id SERIAL PRIMARY KEY,
+  tenant_id TEXT UNIQUE NOT NULL
+);

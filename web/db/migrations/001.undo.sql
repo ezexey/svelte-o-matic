@@ -1,2 +1,2 @@
--- Add SQL in this file to drop the database tables
-DROP TABLE movies;
+-- Drop tables in reverse order of dependencies
+DROP TABLE IF EXISTS tenants;
