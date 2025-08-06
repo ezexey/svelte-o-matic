@@ -1,8 +1,0 @@
-{
-  "name": "example-platformatic-sveltekit-service",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "platformatic-sveltekit-service": "file:../.."
-  }
-}
