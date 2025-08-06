@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schemas.platformatic.dev/@platformatic/runtime/2.73.1.json",
+  "$schema": "https://schemas.platformatic.dev/@platformatic/runtime/2.66.1.json",
   "watch": true,
   "autoload": {
     "path": "web",
@@ -11,7 +11,7 @@
     "level": "{PLT_SERVER_LOGGER_LEVEL}"
   },
   "server": {
-    "hostname": "{PLT_SERVER_HOSTNAME}",
+    "hostname": "{HOST}",
     "port": "{PORT}"
   },
   "managementApi": "{PLT_MANAGEMENT_API}"
