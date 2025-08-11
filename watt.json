@@ -1,6 +1,7 @@
 {
   "$schema": "https://schemas.platformatic.dev/@platformatic/runtime/2.66.1.json",
   "watch": true,
+  "workers": 1,
   "autoload": {
     "path": "web",
     "exclude": [
