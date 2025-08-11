@@ -1,12 +1,19 @@
 {
   "$schema": "https://schemas.platformatic.dev/@platformatic/runtime/2.74.1.json",
   "watch": true,
+  "entrypoint": "composer",
   "autoload": {
     "path": "web",
     "exclude": [
       "docs"
     ]
   },
+  "services": [
+    {
+      "id": "app",
+      "path": "client/app"
+    }
+  ],
   "logger": {
     "level": "{PLT_SERVER_LOGGER_LEVEL}"
   },
@@ -14,6 +21,5 @@
     "hostname": "{PLT_SERVER_HOSTNAME}",
     "port": "{PORT}"
   },
-  "managementApi": "{PLT_MANAGEMENT_API}",
-  "entrypoint": "composer"
+  "managementApi": "{PLT_MANAGEMENT_API}"
 }
