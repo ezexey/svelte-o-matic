@@ -30,3 +30,5 @@ Adding a new service to this project is as simple as running `create-platformati
 ```
 npx create-platformatic
 ```
+
+"build:client": "cd src && npx platformatic client http://127.0.0.1:3042/db/documentation/openapi.json --frontend",
