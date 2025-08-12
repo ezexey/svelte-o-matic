@@ -1,5 +1,5 @@
 {
-  "name": "platformatic",
+  "name": "da-server",
   "scripts": {
     "dev": "wattpm dev",
     "build": "platformatic compile",

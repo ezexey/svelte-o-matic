@@ -11,7 +11,7 @@
     "level": "{PLT_SERVER_LOGGER_LEVEL}"
   },
   "server": {
-    "hostname": "{PLT_SERVER_HOSTNAME}",
+    "hostname": "{HOST}",
     "port": "{PORT}"
   },
   "managementApi": "{PLT_MANAGEMENT_API}",

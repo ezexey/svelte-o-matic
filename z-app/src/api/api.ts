@@ -87,35 +87,6 @@ const _createMovie = async (url: string, request: Types.CreateMovieRequest): Pro
 
   return await response.json()
 }
-export const poop = async (request: Types.GetMoviesRequest) => {
-  const queryParameters: (keyof NonNullable<Types.GetMoviesRequest>)[] = ['limit', 'offset', 'totalCount', 'cursor', 'startAfter', 'endBefore', 'fields', 'where.id.eq', 'where.id.neq', 'where.id.gt', 'where.id.gte', 'where.id.lt', 'where.id.lte', 'where.id.like', 'where.id.ilike', 'where.id.in', 'where.id.nin', 'where.id.contains', 'where.id.contained', 'where.id.overlaps', 'where.title.eq', 'where.title.neq', 'where.title.gt', 'where.title.gte', 'where.title.lt', 'where.title.lte', 'where.title.like', 'where.title.ilike', 'where.title.in', 'where.title.nin', 'where.title.contains', 'where.title.contained', 'where.title.overlaps', 'where.or', 'orderby.id', 'orderby.title']
-  const searchParams = new URLSearchParams()
-  if (request) {
-    queryParameters.forEach((qp) => {
-      const queryValue = request?.[qp]
-      if (queryValue) {
-        if (Array.isArray(queryValue)) {
-          queryValue.forEach((p) => searchParams.append(qp, p))
-        } else {
-          searchParams.append(qp, queryValue.toString())
-        }
-      }
-      delete request?.[qp]
-    })
-  }
-
-  const headers: HeadersInit = {
-    ...defaultHeaders
-  }
-
-  return {
-    p: `${baseUrl}/movies/`,
-    opts: {
-      headers,
-    ...defaultFetchParams
-  }
-}
-}
 
 export const createMovie: Api['createMovie'] = async (request: Types.CreateMovieRequest): Promise<Types.CreateMovieResponses> => {
   return await _createMovie(baseUrl, request)
