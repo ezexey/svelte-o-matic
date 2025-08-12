@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.platformatic.dev/@platformatic/composer/2.74.1.json",
-  "watch": true,
+  "watch": false,
   "composer": {
     "refreshTimeout": 1000,
     "services": [{ "id": "db", "proxy": { "prefix": "/db" }, "openapi": { "url": "/documentation/json" } }]
