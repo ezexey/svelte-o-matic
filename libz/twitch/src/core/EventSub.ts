@@ -1,16 +1,15 @@
 // ============================================
 // src/core/EventSubManager.ts - EventSub WebSocket Manager
 // ============================================
-import { EventEmitter } from './EventEmitter.js';
+import { Emitter } from './Emitter.js';
 import type { 
   EventSubWebSocketMessage, 
   EventSubSession, 
   EventSubSubscription,
-  EventSubCreateSubscriptionRequest,
-  EventSubTopicType
+  EventSubCreateSubscriptionRequest
 } from '../types/eventsub.js';
 
-export class EventSubManager extends EventEmitter {
+export class EventSub extends Emitter {
   private ws: WebSocket | null = null;
   private sessionId: string | null = null;
   private keepaliveTimeout: number | null = null;

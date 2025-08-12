@@ -1,4 +1,4 @@
 // place files you want to import through the `$lib` alias in this folder.
-export * from '../api/api';
-export type * from '../api/api-types';
+export type * as Api from '../api/api-types';
+export * as api from '../api/api';
 export * as twitch from '../../../libz/twitch/src/index';

@@ -46,7 +46,7 @@ export interface EventSubCreateSubscriptionRequest {
   type: string;
   version: string;
   condition: Record<string, string>;
-  transport: EventSubTransport;
+  transport?: EventSubTransport;
 }
 
 // EventSub subscription types mapping from PubSub

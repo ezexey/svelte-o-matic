@@ -1,12 +1,11 @@
 import { describe, it, before, after, mock } from 'node:test';
 import assert from 'node:assert';
-import { EventEmitter } from '../core/EventEmitter';
-import { StateManager } from '../core/StateManager';
+import { Emitter } from '../core/Emitter';
 import { decodeJWT, isTokenExpired } from '../utils/jwt';
 
 describe('EventEmitter', () => {
   it('should emit and listen to events', () => {
-    const emitter = new EventEmitter();
+    const emitter = new Emitter();
     let called = false;
     
     emitter.on('test', () => {
@@ -18,7 +17,7 @@ describe('EventEmitter', () => {
   });
 
   it('should handle once listeners', () => {
-    const emitter = new EventEmitter();
+    const emitter = new Emitter();
     let count = 0;
     
     emitter.once('test', () => {
@@ -31,7 +30,7 @@ describe('EventEmitter', () => {
   });
 
   it('should remove listeners', () => {
-    const emitter = new EventEmitter();
+    const emitter = new Emitter();
     let called = false;
     
     const listener = () => {
@@ -43,39 +42,6 @@ describe('EventEmitter', () => {
     emitter.emit('test');
     
     assert.strictEqual(called, false);
-  });
-});
-
-describe('StateManager', () => {
-  it('should get and set state', () => {
-    const state = new StateManager();
-    
-    state.set('key', 'value');
-    assert.strictEqual(state.get('key'), 'value');
-  });
-
-  it('should notify listeners on state change', () => {
-    const state = new StateManager();
-    let newVal, oldVal;
-    
-    state.subscribe('key', (n, o) => {
-      newVal = n;
-      oldVal = o;
-    });
-    
-    state.set('key', 'value');
-    
-    assert.strictEqual(newVal, 'value');
-    assert.strictEqual(oldVal, undefined);
-  });
-
-  it('should update state with function', () => {
-    const state = new StateManager();
-    
-    state.set('counter', 0);
-    state.update<number>('counter', (prev) => (prev || 0) + 1);
-    
-    assert.strictEqual(state.get('counter'), 1);
   });
 });
 

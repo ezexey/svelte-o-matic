@@ -2,8 +2,10 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import { navigating } from '$app/state';
-  
-  let { data }: { data: PageData } = $props();
+  import { twitch } from "$lib";
+
+  let { data, auth }: { data: PageData, auth: string } = $props();
+  auth = twitch.Extension.I.auth?.token || '';
 </script>
 
 {#if navigating.to}

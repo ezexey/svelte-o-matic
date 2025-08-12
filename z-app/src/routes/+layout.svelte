@@ -3,106 +3,88 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	import { page } from '$app/state';
-	import { theme, themeManager, appliedTheme } from '$lib/stores/theme.js';
-	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+	import {
+		themeManager,
+		appliedTheme,
+		applyThemeToDocument,
+		type AppliedTheme
+	} from '$lib/stores/theme.js';
 	import { twitch } from '$lib';
 
 	let { children } = $props();
 
 	// SSR-safe theme state
-	let currentAppliedTheme = $state('light');
-	let mounted = $state(false);
+	let currentAppliedTheme: AppliedTheme = $state('light');
 
 	// Page route for transitions (using Svelte 5 $derived)
 	const routeId = $derived(page.route?.id);
 
 	// Initialize theme system on mount (browser-only)
 	onMount(() => {
-		mounted = true;
 		const cleanup = themeManager.init();
 
 		// Subscribe to appliedTheme changes (only in browser)
-		const unsubscribe = appliedTheme.subscribe((value) => {
-			currentAppliedTheme = value;
+		const unsubscribe = appliedTheme.subscribe((themeToApply) => {
+			console.log('Applied theme updated:', themeToApply);
+			currentAppliedTheme = themeToApply;
+			applyThemeToDocument(currentAppliedTheme);
 		});
+
+		// Handle async Twitch operations separately
+			(async () => {
+				try {
+					const resolve = Promise.all([
+						twitch.Extension.I.waitForAuth(),
+						twitch.Extension.I.waitForContext()
+					]);
+					const [auth, context] = await Promise.race([
+						resolve,
+						new Promise((_, reject) => setTimeout(() => reject(new Error('Auth and context timeout')), 1000))
+					]) as [twitch.AuthData, twitch.Context];
+          
+					console.log('User is authenticated:', auth);
+					console.log('User context:', context);
+
+					themeManager.setTheme(context.theme);
+
+					// Check user role
+					if (twitch.Extension.I.isBroadcaster()) {
+						console.log('User is the broadcaster');
+					}
+				} catch (error) {
+					console.error('Error initializing Twitch extension:', error);
+				}
+			})();
 
 		return () => {
 			cleanup?.();
 			unsubscribe();
 		};
 	});
-
-	// Apply theme to document (browser-only, prevents hydration mismatch)
-	$effect(() => {
-		if (browser && mounted && typeof document !== 'undefined') {
-			// Use requestAnimationFrame to ensure DOM is ready
-			requestAnimationFrame(() => {
-				document.documentElement.setAttribute('data-theme', currentAppliedTheme);
-				document.documentElement.classList.remove('light', 'dark');
-				document.documentElement.classList.add(currentAppliedTheme);
-			});
-		}
-		
-		// Handle async Twitch operations separately
-		(async () => {
-			try {
-				const witch = twitch.TwitchExtension.getInstance();
-				const auth = await witch.waitForAuth();
-        console.log('User is authenticated:', auth);
-
-        const context = await witch.waitForContext();
-				console.log('User context:', context);
-        
-        // Check user role
-				if (witch.isBroadcaster()) {
-					console.log('User is the broadcaster');
-				}
-
-				// Send PubSub message
-				witch.broadcast('update', { data: 'Hello viewers!' });
-			} catch (error) {
-				console.error('Error initializing Twitch extension:', error);
-			}
-		})();
-	});
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>Twitch Extension</title>
-	<meta name="description" content="SvelteKit Twitch Extension" />
+	<title>Extenzion</title>
+	<meta name="description" content="Platformatic + SvelteKit + Twitch + Extension" />
 	<!-- SSR-safe meta tag with default value -->
-	<meta
-		name="theme-color"
-		content={mounted ? (currentAppliedTheme === 'light' ? '#ffffff' : '#0e0e10') : '#ffffff'}
-	/>
+	<meta name="theme-color" content={currentAppliedTheme === 'light' ? '#ffffff' : '#0e0e10'} />
 </svelte:head>
 
 <!-- SSR-safe data-theme attribute -->
-<div class="app-shell" data-theme={mounted ? currentAppliedTheme : 'light'}>
+<div class="app-shell" data-theme={currentAppliedTheme}>
 	<!-- Optional: Navigation Header -->
 	<header class="extension-header">
 		<div class="header-grid">
 			<!-- Left: Title -->
 			<div class="header-left">
-				<h1 class="heading-secondary">Twitch Extension</h1>
-			</div>
-
-			<!-- Center: Theme Toggle (only show after mount to prevent hydration mismatch) -->
-			<div class="header-center">
-				{#if mounted}
-					<ThemeToggle variant="button" size="sm" position="none" />
-				{:else}
-					<!-- SSR placeholder -->
-					<div style="width: 2rem; height: 2rem;"></div>
-				{/if}
+				<h1 class="heading-secondary">Extenzion</h1>
 			</div>
 
 			<!-- Right: Navigation -->
 			<div class="header-right">
-				<nav class="hidden items-center gap-2 sm:flex">
+				<nav class="items-center gap-2 sm:flex">
 					<a href="/" class="nav-link {page.url.pathname === '/' ? 'active' : ''}"> Home </a>
 					<a href="/panel" class="nav-link {page.url.pathname === '/panel' ? 'active' : ''}">
 						Panel
@@ -127,15 +109,9 @@
 	<!-- Optional: Footer -->
 	<footer class="extension-footer">
 		<div class="flex-between">
-			<p class="text-small">© 2025 Your Twitch Extension</p>
+			<p class="text-small">© 2025 Extenzioneer</p>
 			<div class="flex items-center gap-2">
-				<span class="text-small">Theme:</span>
-				{#if mounted}
-					<ThemeToggle variant="dropdown" size="sm" showLabel={false} position="none" />
-				{:else}
-					<!-- SSR placeholder -->
-					<div style="width: 4rem; height: 1.5rem; background: #f0f0f0; border-radius: 4px;"></div>
-				{/if}
+				<span class="text-small">Theme: {currentAppliedTheme}</span>
 			</div>
 		</div>
 	</footer>
@@ -165,10 +141,6 @@
 
 	.header-left {
 		justify-self: start;
-	}
-
-	.header-center {
-		justify-self: center;
 	}
 
 	.header-right {
@@ -210,7 +182,6 @@
 		}
 
 		.header-left,
-		.header-center,
 		.header-right {
 			justify-self: center;
 		}

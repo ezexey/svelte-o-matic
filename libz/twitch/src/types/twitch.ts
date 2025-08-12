@@ -18,7 +18,6 @@ export interface TwitchExtensionHelper {
   actions: Actions;
   rig: Rig;
   bits: Bits;
-  pubsub: PubSub;
 }
 
 export type AuthorizedCallback = (auth: AuthData) => void;
@@ -121,14 +120,6 @@ export interface BitsTransaction {
   displayName: string;
   initiator: 'CURRENT_USER' | 'OTHER';
 }
-
-export interface PubSub {
-  listen: (target: string, callback: PubSubCallback) => void;
-  unlisten: (target: string, callback: PubSubCallback) => void;
-  send: (target: string, contentType: string, message: object | string) => void;
-}
-
-export type PubSubCallback = (target: string, contentType: string, message: string) => void;
 
 export interface Position {
   x: number;

@@ -1,9 +1,6 @@
 <!-- src/routes/+page.svelte -->
 <script>
   import { theme, appliedTheme, themeManager, THEMES, getThemeDisplayName, isDarkTheme } from '$lib/stores/theme.js';
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
-  import DebugTheme from '$lib/components/DebugTheme.svelte';
-  
   // Demo state
   let message = '';
   let isLoading = false;
@@ -56,7 +53,7 @@
   <div class="text-center">
     <h1 class="heading-primary text-gradient">Theme Management Demo</h1>
     <p class="text-body">
-      Demonstrating the SvelteKit Twitch Extension theme system
+      Demonstrating Platformatic + SvelteKit with a Twitch Extension and a simple theme system
     </p>
   </div>
 
@@ -125,27 +122,6 @@
               {getThemeDisplayName(themeOption)}
             </button>
           {/each}
-        </div>
-      </div>
-      
-      <!-- Toggle Variants -->
-      <div>
-        <p class="text-small mb-3">Toggle Components:</p>
-        <div class="component-cluster">
-          <div class="flex flex-col items-center gap-2">
-            <ThemeToggle variant="button" size="md" showLabel={true} position="none" />
-            <span class="text-small">Button</span>
-          </div>
-          
-          <div class="flex flex-col items-center gap-2">
-            <ThemeToggle variant="dropdown" size="md" showLabel={true} position="none" />
-            <span class="text-small">Dropdown</span>
-          </div>
-          
-          <div class="flex flex-col items-center gap-2">
-            <ThemeToggle variant="switch" size="md" showLabel={true} position="none" />
-            <span class="text-small">Switch</span>
-          </div>
         </div>
       </div>
     </div>

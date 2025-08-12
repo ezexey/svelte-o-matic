@@ -1,6 +1,6 @@
 export type EventListener = (...args: any[]) => void;
 
-export class EventEmitter {
+export class Emitter {
   private events: Map<string, Set<EventListener>> = new Map();
 
   on(event: string, listener: EventListener): this {

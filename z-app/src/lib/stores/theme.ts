@@ -1,5 +1,5 @@
-// src/lib/stores/theme.js
-import { writable, derived } from 'svelte/store';
+// src/lib/stores/theme.ts
+import { writable, derived, type Writable, type Readable } from 'svelte/store';
 import { browser } from '$app/environment';
 
 // Theme types
@@ -7,26 +7,35 @@ export const THEMES = {
   LIGHT: 'light',
   DARK: 'dark',
   AUTO: 'auto'
-};
+} as const;
+
+export type Theme = typeof THEMES[keyof typeof THEMES];
+export type AppliedTheme = typeof THEMES.LIGHT | typeof THEMES.DARK;
 
 // Default theme (SSR-safe)
-const DEFAULT_THEME = THEMES.LIGHT;
+const DEFAULT_THEME: Theme = THEMES.AUTO;
+
+// Theme colors for meta theme-color
+const THEME_COLORS: Record<AppliedTheme, string> = {
+  light: '#ffffff',
+  dark: '#0e0e10'
+} as const;
 
 // Initialize theme from localStorage or default (SSR-safe)
-const getInitialTheme = () => {
+const getInitialTheme = (): Theme => {
   if (!browser) return DEFAULT_THEME;
   
   try {
     const saved = localStorage.getItem('theme');
     console.log('Loading saved theme:', saved);
-    return saved && Object.values(THEMES).includes(saved) ? saved : DEFAULT_THEME;
+    return saved && Object.values(THEMES).includes(saved as Theme) ? (saved as Theme) : DEFAULT_THEME;
   } catch {
     return DEFAULT_THEME;
   }
 };
 
 // System theme detection (SSR-safe)
-const getSystemTheme = () => {
+const getSystemTheme = (): AppliedTheme => {
   if (!browser) return THEMES.LIGHT;
   
   try {
@@ -37,20 +46,20 @@ const getSystemTheme = () => {
 };
 
 // Create the theme stores
-export const theme = writable(getInitialTheme());
+export const theme: Writable<Theme> = writable(getInitialTheme());
 
 // Derived store for applied theme that handles AUTO mode (SSR-safe)
-export const appliedTheme = derived(theme, ($theme) => {
+export const appliedTheme: Readable<AppliedTheme> = derived(theme, ($theme): AppliedTheme => {
   if ($theme === THEMES.AUTO) {
     return getSystemTheme();
   }
-  return $theme;
+  return $theme as AppliedTheme;
 });
 
 // Theme management functions
 export const themeManager = {
   // Set theme and persist to localStorage
-  setTheme: (newTheme) => {
+  setTheme: (newTheme: Theme): void => {
     console.log('Setting theme to:', newTheme);
     
     if (!Object.values(THEMES).includes(newTheme)) {
@@ -71,12 +80,12 @@ export const themeManager = {
   },
 
   // Toggle between light and dark
-  toggleTheme: () => {
+  toggleTheme: (): void => {
     console.log('Toggle theme called');
     
-    theme.update(current => {
+    theme.update((current: Theme): Theme => {
       console.log('Current theme:', current);
-      const newTheme = current === THEMES.LIGHT ? THEMES.DARK : THEMES.LIGHT;
+      const newTheme: Theme = current === THEMES.LIGHT ? THEMES.DARK : THEMES.LIGHT;
       console.log('New theme will be:', newTheme);
       
       if (browser) {
@@ -92,15 +101,15 @@ export const themeManager = {
   },
 
   // Get current theme value (useful for non-reactive contexts)
-  getCurrentTheme: () => {
-    let currentTheme;
-    const unsubscribe = theme.subscribe(value => currentTheme = value);
+  getCurrentTheme: (): Theme => {
+    let currentTheme: Theme;
+    const unsubscribe = theme.subscribe((value: Theme) => currentTheme = value);
     unsubscribe();
-    return currentTheme;
+    return currentTheme!;
   },
 
   // Initialize theme system (browser-only)
-  init: () => {
+  init: (): (() => void) => {
     if (!browser) {
       console.log('Not in browser, skipping theme init');
       return () => {}; // Return empty cleanup function
@@ -111,16 +120,16 @@ export const themeManager = {
     try {
       // Handle system theme changes when in auto mode
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleSystemThemeChange = () => {
+      const handleSystemThemeChange = (): void => {
         console.log('System theme changed');
         // Trigger reactivity by updating the theme
-        theme.update(current => current);
+        theme.update((current: Theme) => current);
       };
 
       mediaQuery.addEventListener('change', handleSystemThemeChange);
 
       // Cleanup function
-      return () => {
+      return (): void => {
         mediaQuery.removeEventListener('change', handleSystemThemeChange);
       };
     } catch (error) {
@@ -128,10 +137,10 @@ export const themeManager = {
       return () => {}; // Return empty cleanup function
     }
   }
-};
+} as const;
 
 // Apply theme to document (browser-only, prevents hydration mismatch)
-const applyThemeToDocument = (themeToApply) => {
+export const applyThemeToDocument = (themeToApply: AppliedTheme): void => {
   if (!browser || typeof document === 'undefined') return;
   
   // Use requestAnimationFrame to avoid hydration issues
@@ -148,11 +157,7 @@ const applyThemeToDocument = (themeToApply) => {
       // Update meta theme-color for mobile browsers
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
       if (metaThemeColor) {
-        const themeColors = {
-          light: '#ffffff',
-          dark: '#0e0e10'
-        };
-        metaThemeColor.setAttribute('content', themeColors[themeToApply]);
+        metaThemeColor.setAttribute('content', THEME_COLORS[themeToApply]);
         console.log('Meta theme-color updated for:', themeToApply);
       }
     } catch (error) {
@@ -161,20 +166,8 @@ const applyThemeToDocument = (themeToApply) => {
   });
 };
 
-// Subscribe to applied theme changes and update document (browser-only)
-if (browser) {
-  appliedTheme.subscribe((themeToApply) => {
-    console.log('Applied theme updated:', themeToApply);
-    applyThemeToDocument(themeToApply);
-  });
-
-  // Initialize on mount (browser-only)
-  console.log('Theme store loaded, initializing...');
-  themeManager.init();
-}
-
 // Utility function to check if dark theme is active (SSR-safe)
-export const isDarkTheme = (themeValue) => {
+export const isDarkTheme = (themeValue: Theme): boolean => {
   if (themeValue === THEMES.AUTO) {
     return getSystemTheme() === THEMES.DARK;
   }
@@ -182,8 +175,8 @@ export const isDarkTheme = (themeValue) => {
 };
 
 // Utility function to get theme display name (SSR-safe)
-export const getThemeDisplayName = (themeValue) => {
-  const names = {
+export const getThemeDisplayName = (themeValue: Theme): string => {
+  const names: Record<Theme, string> = {
     [THEMES.LIGHT]: 'Light',
     [THEMES.DARK]: 'Dark',
     [THEMES.AUTO]: 'Auto'
