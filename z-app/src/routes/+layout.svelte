@@ -1,64 +1,24 @@
-<!-- src/routes/+layout.svelte -->
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import {
-		themeManager,
-		appliedTheme,
-		applyThemeToDocument,
-		type AppliedTheme
-	} from '$lib/stores/theme.js';
-	import { twitch } from '$lib';
+	import { appliedTheme, applyThemeToDocument, type AppliedTheme } from '$lib/stores/theme.js';
+	import { onMount } from 'svelte';
 
 	let { children } = $props();
 
 	// SSR-safe theme state
-	let currentAppliedTheme: AppliedTheme = $state('light');
-
+	let theme: AppliedTheme = $state('light');
 	// Page route for transitions (using Svelte 5 $derived)
 	const routeId = $derived(page.route?.id);
 
-	// Initialize theme system on mount (browser-only)
 	onMount(() => {
-		const cleanup = themeManager.init();
-
 		// Subscribe to appliedTheme changes (only in browser)
 		const unsubscribe = appliedTheme.subscribe((themeToApply) => {
-			console.log('Applied theme updated:', themeToApply);
-			currentAppliedTheme = themeToApply;
-			applyThemeToDocument(currentAppliedTheme);
+			theme = themeToApply;
+			applyThemeToDocument(themeToApply);
 		});
-
-		// Handle async Twitch operations separately
-			(async () => {
-				try {
-					const resolve = Promise.all([
-						twitch.Extension.I.waitForAuth(),
-						twitch.Extension.I.waitForContext()
-					]);
-					const [auth, context] = await Promise.race([
-						resolve,
-						new Promise((_, reject) => setTimeout(() => reject(new Error('Auth and context timeout')), 1000))
-					]) as [twitch.AuthData, twitch.Context];
-          
-					console.log('User is authenticated:', auth);
-					console.log('User context:', context);
-
-					themeManager.setTheme(context.theme);
-
-					// Check user role
-					if (twitch.Extension.I.isBroadcaster()) {
-						console.log('User is the broadcaster');
-					}
-				} catch (error) {
-					console.error('Error initializing Twitch extension:', error);
-				}
-			})();
-
 		return () => {
-			cleanup?.();
 			unsubscribe();
 		};
 	});
@@ -69,11 +29,11 @@
 	<title>Extenzion</title>
 	<meta name="description" content="Platformatic + SvelteKit + Twitch + Extension" />
 	<!-- SSR-safe meta tag with default value -->
-	<meta name="theme-color" content={currentAppliedTheme === 'light' ? '#ffffff' : '#0e0e10'} />
+	<meta name="theme-color" content={theme === 'light' ? '#ffffff' : '#0e0e10'} />
 </svelte:head>
 
 <!-- SSR-safe data-theme attribute -->
-<div class="app-shell" data-theme={currentAppliedTheme}>
+<div class="app-shell" data-theme={theme}>
 	<!-- Optional: Navigation Header -->
 	<header class="extension-header">
 		<div class="header-grid">
@@ -111,7 +71,7 @@
 		<div class="flex-between">
 			<p class="text-small">© 2025 Extenzioneer</p>
 			<div class="flex items-center gap-2">
-				<span class="text-small">Theme: {currentAppliedTheme}</span>
+				<span class="text-small">Theme: {theme}</span>
 			</div>
 		</div>
 	</footer>

@@ -1,3 +1,6 @@
+// ============================================
+// types/twitch.d.ts - Updated Twitch Extension Types
+// ============================================
 declare global {
   interface Window {
     Twitch: {
@@ -5,88 +8,67 @@ declare global {
     };
   }
 }
+
 export interface TwitchExtensionHelper {
-  onAuthorized: (callback: AuthorizedCallback) => void;
-  onContext: (callback: ContextCallback) => void;
-  onError: (callback: ErrorCallback) => void;
-  onHighlightChanged: (callback: HighlightCallback) => void;
-  onPositionChanged: (callback: PositionCallback) => void;
-  onVisibilityChanged: (callback: VisibilityCallback) => void;
-  configuration: Configuration;
-  viewer: Viewer;
-  features: Features;
+  version: string;
+  environment: string;
+  
+  // Core callbacks
+  onAuthorized: (callback: (auth: AuthData) => void) => void;
+  onContext: (callback: (context: Context, changed?: string[]) => void) => void;
+  onError: (callback: (error: any) => void) => void;
+  onHighlightChanged: (callback: (highlighted: boolean) => void) => void;
+  onPositionChanged: (callback: (position: Position) => void) => void;
+  onVisibilityChanged: (callback: (isVisible: boolean, context?: Context) => void) => void;
+  
+  // Extension Messaging (NOT deprecated - this is Extension-specific, not legacy PubSub)
+  send: (target: string, contentType: string, message: object | string) => void;
+  listen: (target: string, callback: (target: string, contentType: string, message: string) => void) => void;
+  unlisten: (target: string, callback: Function) => void;
+  
+  // Sub-namespaces
   actions: Actions;
-  rig: Rig;
+  configuration: Configuration;
+  features: Features;
   bits: Bits;
+  viewer: Viewer;
+  rig?: Rig;
 }
 
-export type AuthorizedCallback = (auth: AuthData) => void;
-export type ContextCallback = (context: Context) => void;
-export type ErrorCallback = (error: string) => void;
-export type HighlightCallback = (highlighted: boolean) => void;
-export type PositionCallback = (position: Position) => void;
-export type VisibilityCallback = (isVisible: boolean, context: VisibilityContext) => void;
-
 export interface AuthData {
-  token: string;
-  userId: string;
   channelId: string;
-  helixToken: string;
   clientId: string;
+  token: string;  // JWT for EBS authentication
+  helixToken: string;  // JWT for Twitch API requests
+  userId?: string;
 }
 
 export interface Context {
-  arePlayerControlsVisible: boolean;
-  bitrate: number;
-  bufferSize: number;
-  displayResolution: string;
-  game: string;
-  hlsLatencyBroadcaster: number;
-  hostingInfo?: HostingInfo;
-  isFullScreen: boolean;
-  isMuted: boolean;
-  isPaused: boolean;
-  isTheatreMode: boolean;
-  language: string;
-  mode: 'viewer' | 'dashboard' | 'config';
-  playbackMode: 'video' | 'audio' | 'remote' | 'chat-only';
-  theme: 'light' | 'dark';
-  videoResolution: string;
-  volume: number;
+  arePlayerControlsVisible?: boolean;
+  bitrate?: number;
+  bufferSize?: number;
+  displayResolution?: string;
+  game?: string;
+  hlsLatencyBroadcaster?: number;
+  hostingInfo?: {
+    hostedChannelId: string;
+    hostingChannelId: string;
+  };
+  isFullScreen?: boolean;
+  isMuted?: boolean;
+  isPaused?: boolean;
+  isTheatreMode?: boolean;
+  language?: string;
+  mode?: 'viewer' | 'dashboard' | 'config';
+  playbackMode?: 'video' | 'audio' | 'remote' | 'chat-only';
+  theme?: 'light' | 'dark';
+  videoResolution?: string;
+  volume?: number;
 }
 
-export interface Configuration {
-  broadcaster?: ConfigurationObject;
-  developer?: ConfigurationObject;
-  global?: ConfigurationObject;
-  onChanged: (callback: () => void) => void;
-  set: (segment: 'broadcaster' | 'developer' | 'global', version: string, content: string) => void;
-}
-
-export interface ConfigurationObject {
-  version: string;
-  content: string;
-}
-
-export interface Viewer {
-  id: string;
-  isLinked: boolean;
-  opaqueId: string;
-  role: 'broadcaster' | 'moderator' | 'viewer' | 'external';
-  sessionToken: string;
-  subscriptionStatus?: SubscriptionStatus;
-  onChanged: (callback: () => void) => void;
-}
-
-export interface SubscriptionStatus {
-  tier: '1000' | '2000' | '3000' | 'prime';
-}
-
-export interface Features {
-  isBitsEnabled: boolean;
-  isChatEnabled: boolean;
-  isSubscriptionStatusAvailable: boolean;
-  onChanged: (callback: (changed: string[]) => void) => void;
+export interface Position {
+  x: number;
+  y: number;
 }
 
 export interface Actions {
@@ -96,45 +78,68 @@ export interface Actions {
   requestIdShare: () => void;
 }
 
-export interface Bits {
-  getProducts: () => Promise<BitsProduct[]>;
-  onTransactionComplete: (callback: (transaction: BitsTransaction) => void) => void;
-  onTransactionCancelled: (callback: () => void) => void;
-  setUseLoopback: (useLoopback: boolean) => void;
-  showBitsBalance: () => void;
-  useBits: (sku: string) => void;
+export interface ConfigurationSegment {
+  version: string;
+  content: string;
 }
 
-export interface BitsProduct {
+export interface Configuration {
+  broadcaster?: ConfigurationSegment;
+  developer?: ConfigurationSegment;
+  global?: ConfigurationSegment;
+  onChanged: (callback: () => void) => void;
+  set: (segment: 'broadcaster', version: string, content: string) => void;
+}
+
+export interface Features {
+  isBitsEnabled: boolean;
+  isChatEnabled: boolean;
+  isSubscriptionStatusAvailable: boolean;
+  onChanged: (callback: (changed: string[]) => void) => void;
+}
+
+export interface Viewer {
+  opaqueId: string;
+  id: string | null;
+  role: 'broadcaster' | 'moderator' | 'viewer' | 'external';
+  isLinked: boolean;
+  sessionToken: string;
+  helixToken: string;
+  subscriptionStatus: SubscriptionStatus | null;
+  onChanged: (callback: () => void) => void;
+}
+
+export interface SubscriptionStatus {
+  tier: '1000' | '2000' | '3000';
+}
+
+export interface Product {
   sku: string;
-  cost: { amount: string; type: 'bits' };
   displayName: string;
+  cost: {
+    amount: string;
+    type: 'bits';
+  };
   inDevelopment?: boolean;
 }
 
-export interface BitsTransaction {
-  transactionID: string;
-  product: BitsProduct;
-  userId: string;
-  transactionReceipt: string;
+export interface TransactionObject {
   displayName: string;
-  initiator: 'CURRENT_USER' | 'OTHER';
+  initiator: 'current_user' | 'other';
+  product: Product;
+  domainId: string;
+  transactionId: string;
+  transactionReceipt: string;
+  userId: string;
 }
 
-export interface Position {
-  x: number;
-  y: number;
-}
-
-export interface VisibilityContext {
-  isChannelPage: boolean;
-  isLive: boolean;
-  isVod: boolean;
-}
-
-export interface HostingInfo {
-  hostedChannelId: string;
-  hostingChannelId: string;
+export interface Bits {
+  getProducts: () => Promise<Product[]>;
+  onTransactionCancelled: (callback: () => void) => void;
+  onTransactionComplete: (callback: (transaction: TransactionObject) => void) => void;
+  setUseLoopback: (useLoopback: boolean) => void;
+  showBitsBalance: () => void;
+  useBits: (sku: string) => void;
 }
 
 export interface Rig {

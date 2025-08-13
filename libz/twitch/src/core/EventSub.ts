@@ -1,13 +1,14 @@
 // ============================================
-// src/core/EventSubManager.ts - EventSub WebSocket Manager
+// EventSub.ts - EventSub WebSocket Manager for Backend Services
+// Note: This should run in your EBS (Extension Backend Service), NOT in the browser
 // ============================================
-import { Emitter } from './Emitter.js';
+import { Emitter } from './Emitter';
 import type { 
   EventSubWebSocketMessage, 
   EventSubSession, 
   EventSubSubscription,
   EventSubCreateSubscriptionRequest
-} from '../types/eventsub.js';
+} from '../types/eventsub';
 
 export class EventSub extends Emitter {
   private ws: WebSocket | null = null;
@@ -21,7 +22,10 @@ export class EventSub extends Emitter {
   private maxReconnectAttempts = 5;
   private reconnectAttempts = 0;
   
-  constructor(private accessToken: string, private clientId: string) {
+  constructor(
+    private accessToken: string,  // App access token or user access token
+    private clientId: string
+  ) {
     super();
   }
 
@@ -152,6 +156,20 @@ export class EventSub extends Emitter {
       // Close current connection and reconnect
       this.disconnect();
       await this.connect(this.reconnectUrl);
+      
+      // Resubscribe to all subscriptions after reconnect
+      const existingSubscriptions = Array.from(this.subscriptions.values());
+      for (const sub of existingSubscriptions) {
+        try {
+          await this.subscribe({
+            type: sub.type,
+            version: sub.version,
+            condition: sub.condition
+          });
+        } catch (error) {
+          console.error(`[EventSub] Failed to resubscribe to ${sub.type}:`, error);
+        }
+      }
     }
   }
 

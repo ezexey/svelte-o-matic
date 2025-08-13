@@ -9,7 +9,7 @@ export interface RequestConfig {
 
 export class Client {
   private static instance: Client | null = null;
-  private baseURL: string = "";
+  private baseURL?: string = undefined;
   private defaultHeaders: Record<string, string>;
 
   private constructor() {
@@ -32,7 +32,7 @@ export class Client {
   }
 
   async request<T>(endpoint: string, fetcher = fetch, config: RequestConfig = {}): Promise<T> {
-    const url = `${this.baseURL}${endpoint}`;
+    const url = `${this.baseURL || "http://127.0.0.1:3042"}${endpoint}`;
     const controller = new AbortController();
     const timeout = config.timeout || 30000;
 

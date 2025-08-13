@@ -1,7 +1,7 @@
 import { describe, it, before, after, mock } from 'node:test';
 import assert from 'node:assert';
-import { Emitter } from '../core/Emitter';
-import { decodeJWT, isTokenExpired } from '../utils/jwt';
+import { Emitter } from '../src/core/Emitter';
+import { decodeJWT, isTokenExpired } from '../src/utils/jwt';
 
 describe('EventEmitter', () => {
   it('should emit and listen to events', () => {
