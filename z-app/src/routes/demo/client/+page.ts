@@ -7,7 +7,7 @@ export const load: PageLoad = async ({ fetch }) => {
 	return {
 		theme: 'light' as Theme,
 		user: {},
-		movies: await app.client.movies(fetch),
+		movies: await app.client.movies(fetch, { 'orderby.id': 'asc' }),
 		moviesToo: await app.client.api.getMovies({})
 	};
 };
