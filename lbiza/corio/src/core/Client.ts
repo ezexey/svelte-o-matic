@@ -1,4 +1,4 @@
-import type { Api } from "../index";
+import type * as Api from "../api/api-types";
 
 interface ApiTypeRegistry {
   "/movies": {
@@ -63,7 +63,7 @@ export class Client {
   setInit(init: RequestInit) {
     this.init = init;
   }
-  
+
   setAuthBearer(token: string) {
     this.headers["Authorization"] = `Bearer ${token}`;
   }
@@ -113,3 +113,4 @@ export class Client {
   put = this.call("PUT");
   delete = this.call("DELETE");
 }
+export { Api };

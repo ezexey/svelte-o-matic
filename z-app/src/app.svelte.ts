@@ -11,7 +11,7 @@ export const app = {
 	client: {
 		api: corio.api,
 		i: corio.core.Client.I,
-		getMovies: async (fetcher: typeof fetch, request: Partial<corio.Api.GetMoviesRequest> = {}) =>
+		movies: async (fetcher: typeof fetch, request: Partial<corio.core.Api.GetMoviesRequest> = {}) =>
 			corio.core.Client.I.get({
 				endpoint: '/movies',
 				fetcher,
@@ -21,15 +21,15 @@ export const app = {
 					...request // Allow overriding defaults
 				}
 			})
-	},
+	}
 };
 
 export const config = $state({
 	theme: { writer, reader, value: 'light' as Theme },
 	mountain: () => {
 		const cleanup = manager.init((theme) => (config.theme.value = theme));
-			return () => {
-				cleanup();
-			};
-		}
+		return () => {
+			cleanup();
+		};
+	}
 });
