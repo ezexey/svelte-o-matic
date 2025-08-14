@@ -1,81 +1,76 @@
-export interface RequestConfig {
-  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+export type Methods = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+export interface Options {
   headers?: Record<string, string>;
   body?: any;
   timeout?: number;
 }
+export interface Opts<T> {
+  endpoint: string;
+  request?: T;
+  method?: Methods;
+  options?: Options;
+  fetcher?: typeof fetch;
+}
 
 export class Client {
-  private static instance: Client | null = null;
-  private baseURL?: string = undefined;
+  private static instance?: Client;
+  private baseUrl?: string;
   private defaultHeaders: Record<string, string>;
 
   private constructor() {
-    this.defaultHeaders = {
-      "Content-Type": "application/json",
-    };
+    this.defaultHeaders = { "Content-type": "application/json; charset=utf-8" };
+  }
+  static get I(): Client {
+    return (Client.instance ??= new Client());
   }
 
-  static get I(): Client {
-    if (!Client.instance) {
-      Client.instance = new Client();
-    }
-    return Client.instance;
+  setBaseUrl(input: string) {
+    this.baseUrl = input;
   }
-  setBaseURL(url: string): void {
-    this.baseURL = url.endsWith("/") ? url.slice(0, -1) : url;
-  }
+
   setAuthBearer(token: string): void {
     this.defaultHeaders["Authorization"] = `Bearer ${token}`;
   }
 
-  async request<T>(endpoint: string, fetcher = fetch, config: RequestConfig = {}): Promise<T> {
-    const url = `${this.baseURL || "http://127.0.0.1:3042"}${endpoint}`;
-    const controller = new AbortController();
-    const timeout = config.timeout || 30000;
-
-    const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-    try {
-      const response = await fetcher(url, {
-        method: config.method || "GET",
-        headers: {
-          ...this.defaultHeaders,
-          ...config.headers,
-        },
-        body: config.body ? JSON.stringify(config.body) : undefined,
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      clearTimeout(timeoutId);
-      if (error instanceof Error && error.name === "AbortError") {
-        throw new Error("Request timeout");
-      }
-      throw error;
-    }
+  async request<T>(input: RequestInfo | URL, fetcher: typeof fetch, init?: RequestInit): Promise<T> {
+    const response = await fetcher(input, init);
+    if (!response.ok) throw new Error(`HTTP error! status: ${JSON.stringify(response)}`);
+    return await response.json();
   }
 
-  get<T>(endpoint: string, fetcher = fetch, config?: RequestConfig): Promise<T> {
-    return this.request<T>(endpoint, fetcher, { ...config, method: "GET" });
+  private call<T, TT>(opts: Opts<TT>): Promise<T> {
+    const query = new URLSearchParams();
+    Object.entries(opts.request || {}).forEach(([key, value]) => {
+      if (!value) return;
+      if (Array.isArray(value)) value.forEach((v) => query.append(key, v));
+      else query.append(key, value.toString());
+    });
+
+    return this.request<T>(new URL(`${opts.endpoint}?${query}`, this.baseUrl), opts.fetcher || fetch, {
+      method: opts.method,
+      headers: {
+        ...this.defaultHeaders,
+        ...opts.options?.headers,
+      },
+      body: opts.options?.body ? JSON.stringify(opts.options.body) : undefined,
+      signal: opts.options?.timeout ? AbortSignal.timeout(opts.options.timeout) : undefined,
+    });
   }
 
-  post<T>(endpoint: string, fetcher = fetch, body?: any, config?: RequestConfig): Promise<T> {
-    return this.request<T>(endpoint, fetcher, { ...config, method: "POST", body });
+  // Convenience methods for common HTTP methods
+  get<T, TT>(opts: Opts<TT>) {
+    return this.call<T, TT>({ method: "GET", ...opts });
   }
 
-  put<T>(endpoint: string, fetcher = fetch, body?: any, config?: RequestConfig): Promise<T> {
-    return this.request<T>(endpoint, fetcher, { ...config, method: "PUT", body });
+  post<T, TT>(opts: Opts<TT>) {
+    return this.call<T, TT>({ method: "POST", ...opts });
   }
 
-  delete<T>(endpoint: string, fetcher = fetch, config?: RequestConfig): Promise<T> {
-    return this.request<T>(endpoint, fetcher, { ...config, method: "DELETE" });
+  put<T, TT>(opts: Opts<TT>) {
+    return this.call<T, TT>({ method: "PUT", ...opts });
+  }
+
+  delete<T, TT>(opts: Opts<TT>) {
+    return this.call<T, TT>({ method: "DELETE", ...opts });
   }
 }
