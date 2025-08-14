@@ -1,5 +1,3 @@
-import { Extension } from "./Extension";
-
 export interface RequestConfig {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   headers?: Record<string, string>;
@@ -27,7 +25,7 @@ export class Client {
   setBaseURL(url: string): void {
     this.baseURL = url.endsWith("/") ? url.slice(0, -1) : url;
   }
-  setAuthToken(token: string): void {
+  setAuthBearer(token: string): void {
     this.defaultHeaders["Authorization"] = `Bearer ${token}`;
   }
 

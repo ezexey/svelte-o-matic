@@ -1,20 +1,18 @@
 {
-  "name": "twitch",
+  "name": "funk",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+		"build:api": "cd src && npx platformatic client http://127.0.0.1:3042/db/documentation/openapi.json --frontend --language ts",
     "test": "tsx --test test/**/*.test.ts",
     "dev": "tsc --watch",
     "clean": "rm -rf dist"
   },
   "keywords": [
-    "twitch",
-    "extension",
-    "typescript",
-    "twitch-ext"
+    "funk"
   ],
   "author": "",
   "license": "MIT",

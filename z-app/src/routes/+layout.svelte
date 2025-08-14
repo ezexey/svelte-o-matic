@@ -2,38 +2,23 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
-	import { appliedTheme, applyThemeToDocument, type AppliedTheme } from '$lib/stores/theme.js';
 	import { onMount } from 'svelte';
+	import { g } from './state.svelte';
 
 	let { children } = $props();
-
-	// SSR-safe theme state
-	let theme: AppliedTheme = $state('light');
-	// Page route for transitions (using Svelte 5 $derived)
 	const routeId = $derived(page.route?.id);
 
-	onMount(() => {
-		// Subscribe to appliedTheme changes (only in browser)
-		const unsubscribe = appliedTheme.subscribe((themeToApply) => {
-			theme = themeToApply;
-			applyThemeToDocument(themeToApply);
-		});
-		return () => {
-			unsubscribe();
-		};
-	});
+	onMount(g.mountain);
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 	<title>Extenzion</title>
 	<meta name="description" content="Platformatic + SvelteKit + Twitch + Extension" />
-	<!-- SSR-safe meta tag with default value -->
-	<meta name="theme-color" content={theme === 'light' ? '#ffffff' : '#0e0e10'} />
 </svelte:head>
 
 <!-- SSR-safe data-theme attribute -->
-<div class="app-shell" data-theme={theme}>
+<div class="app-shell" data-theme={g.theme.value}>
 	<!-- Optional: Navigation Header -->
 	<header class="extension-header">
 		<div class="header-grid">
@@ -71,7 +56,7 @@
 		<div class="flex-between">
 			<p class="text-small">© 2025 Extenzioneer</p>
 			<div class="flex items-center gap-2">
-				<span class="text-small">Theme: {theme}</span>
+				<span class="text-small">Theme: {g.theme.value}</span>
 			</div>
 		</div>
 	</footer>

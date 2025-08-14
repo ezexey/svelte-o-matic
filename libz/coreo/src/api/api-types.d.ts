@@ -114,6 +114,14 @@ export type UpdateMoviesResponseOK = Array<{ 'id'?: number | null; 'title'?: str
 export type UpdateMoviesResponses =
   UpdateMoviesResponseOK
 
+export type OptionsMoviesRequest = {
+  
+}
+
+export type OptionsMoviesResponseOK = unknown
+export type OptionsMoviesResponses =
+  FullResponse<OptionsMoviesResponseOK, 200>
+
 export type GetMovieByIdRequest = {
   'fields'?: Array<'id' | 'title'>;
   'id': number;
@@ -189,6 +197,11 @@ export interface Api {
    * @returns the API response body
    */
   updateMovies(req: UpdateMoviesRequest): Promise<UpdateMoviesResponses>;
+  /**
+   * @param req - request parameters object
+   * @returns the API response body
+   */
+  optionsMovies(req: OptionsMoviesRequest): Promise<OptionsMoviesResponses>;
   /**
    * Get Movie by id.
    *

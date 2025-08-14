@@ -35,7 +35,7 @@ export class Extension extends Emitter {
     this.contextPromise = new Promise((resolve) => {
       this.contextResolve = resolve;
     });
-    this.ext = window.Twitch?.ext;
+    this.ext = window.Twitch.ext;
     this.initialize();
   }
 
@@ -47,7 +47,6 @@ export class Extension extends Emitter {
   }
 
   private initialize(): void {
-    if(!this.ext) return;
     // Set up authorization handler
     this.ext.onAuthorized((auth) => {
       this.authData = auth;

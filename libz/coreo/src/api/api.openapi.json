@@ -681,6 +681,13 @@
             "links": {}
           }
         }
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
       }
     },
     "/movies/{id}": {

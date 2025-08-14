@@ -2,21 +2,10 @@
 	import type { PageData } from './$types';
 	import { navigating } from '$app/state';
 	import { onMount } from 'svelte';
-	import { appliedTheme, applyThemeToDocument, themeManager } from '$lib/stores/theme';
+	import { g } from '../state.svelte';
 
 	let { data }: { data: PageData } = $props();
-	onMount(() => {
-		const cleanup = themeManager.init();
-
-		// Subscribe to appliedTheme changes (only in browser)
-		const unsubscribe = appliedTheme.subscribe((themeToApply) => applyThemeToDocument(themeToApply));
-		themeManager.setTheme(data.theme);
-
-		return () => {
-			cleanup?.();
-			unsubscribe();
-		};
-	});
+	onMount(g.mountain);
 </script>
 
 {#if navigating.to}

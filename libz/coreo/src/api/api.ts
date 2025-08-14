@@ -132,6 +132,40 @@ const _updateMovies = async (url: string, request: Types.UpdateMoviesRequest): P
 export const updateMovies: Api['updateMovies'] = async (request: Types.UpdateMoviesRequest): Promise<Types.UpdateMoviesResponses> => {
   return await _updateMovies(baseUrl, request)
 }
+const _optionsMovies = async (url: string, request: Types.OptionsMoviesRequest): Promise<Types.OptionsMoviesResponses> => {
+  const body = request
+  const isFormData = body instanceof FormData
+  const headers: HeadersInit = {
+    ...defaultHeaders,
+    ...(isFormData || body === undefined) ? {} : defaultJsonType
+  }
+
+  const response = await fetch(`${url}/movies/`, {
+    method: 'OPTIONS',
+    body: isFormData ? body : JSON.stringify(body),
+    headers,
+    ...defaultFetchParams
+  })
+
+  const textResponses = [200]
+  if (textResponses.includes(response.status)) {
+    return {
+      statusCode: response.status as 200,
+      headers: headersToJSON(response.headers),
+      body: await response.text()
+    }
+  }
+  const responseType = response.headers.get('content-type')?.startsWith('application/json') ? 'json' : 'text'
+  return {
+    statusCode: response.status as 200,
+    headers: headersToJSON(response.headers),
+    body: await response[responseType]()
+  }
+}
+
+export const optionsMovies: Api['optionsMovies'] = async (request: Types.OptionsMoviesRequest): Promise<Types.OptionsMoviesResponses> => {
+  return await _optionsMovies(baseUrl, request)
+}
 const _getMovieById = async (url: string, request: Types.GetMovieByIdRequest): Promise<Types.GetMovieByIdResponses> => {
   const queryParameters: (keyof NonNullable<Types.GetMovieByIdRequest>)[] = ['fields']
   const searchParams = new URLSearchParams()
@@ -291,6 +325,7 @@ export default function build (url: string, options?: BuildOptions) {
     getMovies: _getMovies.bind(url, ...arguments),
     createMovie: _createMovie.bind(url, ...arguments),
     updateMovies: _updateMovies.bind(url, ...arguments),
+    optionsMovies: _optionsMovies.bind(url, ...arguments),
     getMovieById: _getMovieById.bind(url, ...arguments),
     updateMovie: _updateMovie.bind(url, ...arguments),
     deleteMovies: _deleteMovies.bind(url, ...arguments),
