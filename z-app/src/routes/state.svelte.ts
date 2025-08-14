@@ -1,22 +1,30 @@
-import { coreo } from '$lib';
+import { coreo as oreo } from '$lib';
 import { type Theme, writer, reader, manager } from '$lib/stores/theme';
 
 const privet = { loaded: false };
 export const app = {
 	client: {
-		api: coreo.api,
-		getMovies: (fetcher: typeof fetch, options: Partial<coreo.Opts<coreo.Api.GetMoviesRequest>> = {}) => {
-			return coreo.Client.I.get<coreo.Api.GetMoviesResponses, coreo.Api.GetMoviesRequest>({
-				endpoint: '/movies/',
+		api: oreo.api,
+		i: oreo.coreo.Client.I,
+		getMovies: async (fetcher: typeof fetch, request: Partial<oreo.Api.GetMoviesRequest> = {}) => {
+			const response = await oreo.coreo.Client.I.get({
+				endpoint: '/movies',
 				fetcher,
-				...options
+				request: {
+					offset: 0,
+					limit: 20,
+					...request // Allow overriding defaults
+				}
 			});
+
+			console.log('Movies:', response);
+			return response;
 		}
 	},
 	init: (reload = false) => {
 		if (privet.loaded && !reload) return;
-		coreo.api.setBaseUrl('http://127.0.0.1:3042');
-		coreo.Client.I.setBaseUrl('http://127.0.0.1:3042');
+		oreo.api.setBaseUrl('http://127.0.0.1:3042');
+		oreo.coreo.Client.I.setBaseUrl('http://127.0.0.1:3042');
 	}
 };
 
