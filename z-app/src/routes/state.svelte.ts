@@ -1,13 +1,13 @@
-import { corio as oreo } from '$lib';
+import { corio } from '$lib';
 import { type Theme, writer, reader, manager } from '$lib/stores/theme';
 
 const privet = { loaded: false };
 export const app = {
 	client: {
-		api: oreo.api,
-		i: oreo.coreo.Client.I,
-		getMovies: async (fetcher: typeof fetch, request: Partial<oreo.Api.GetMoviesRequest> = {}) => {
-			const response = await oreo.coreo.Client.I.get({
+		api: corio.api,
+		i: corio.core.Client.I,
+		getMovies: async (fetcher: typeof fetch, request: Partial<corio.Api.GetMoviesRequest> = {}) => {
+			const response = await corio.core.Client.I.get({
 				endpoint: '/movies',
 				fetcher,
 				request: {
@@ -23,8 +23,8 @@ export const app = {
 	},
 	init: (reload = false) => {
 		if (privet.loaded && !reload) return;
-		oreo.api.setBaseUrl('http://127.0.0.1:3042');
-		oreo.coreo.Client.I.setBaseUrl('http://127.0.0.1:3042');
+		corio.api.setBaseUrl('http://127.0.0.1:3042');
+		corio.core.Client.I.setBaseUrl('http://127.0.0.1:3042');
 	}
 };
 
