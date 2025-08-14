@@ -63,7 +63,7 @@
 			Set Dark Test
 		</button>
 		<p style="margin: 0.5rem 0; color: #666; font-size: 14px;">
-			Current: {g.theme.writer} | Applied: {g.theme.reader}
+			Current: {JSON.stringify(g.theme.writer)} | Applied: {g.theme.reader} | Value: {g.theme.value}
 		</p>
 	</div>
 

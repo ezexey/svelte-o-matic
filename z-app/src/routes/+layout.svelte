@@ -22,7 +22,7 @@
 		<div class="header-grid">
 			<!-- Left: Title -->
 			<div class="header-left">
-				<h1 class="heading-secondary">Adapt</h1>
+				<h1 class="heading-secondary">Demo</h1>
 			</div>
 
 			<!-- Right: Navigation -->
