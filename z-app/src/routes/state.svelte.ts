@@ -1,4 +1,4 @@
-import { coreo as oreo } from '$lib';
+import { corio as oreo } from '$lib';
 import { type Theme, writer, reader, manager } from '$lib/stores/theme';
 
 const privet = { loaded: false };
