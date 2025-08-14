@@ -2,10 +2,10 @@
 	import type { PageData } from './$types';
 	import { navigating } from '$app/state';
 	import { onMount } from 'svelte';
-	import { g } from '../../state.svelte';
+	import { config } from '../../../app.svelte';
 
 	let { data }: { data: PageData } = $props();
-	onMount(g.mountain);
+	onMount(config.mountain);
 </script>
 
 <svelte:head>

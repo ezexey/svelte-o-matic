@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
 import type { Theme } from '$lib/stores/theme';
-import { app } from '../../state.svelte';
+import { app } from '../../../app.svelte';
 
 export const load: PageLoad = async ({ fetch }) => {
 	app.init();

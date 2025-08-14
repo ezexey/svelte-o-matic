@@ -3,12 +3,12 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
-	import { g } from './state.svelte';
+	import { app, config } from '../app.svelte';
 
 	let { children } = $props();
 	const routeId = $derived(page.route?.id);
 
-	onMount(g.mountain);
+	onMount(config.mountain);
 </script>
 
 <svelte:head>
@@ -16,7 +16,7 @@
 </svelte:head>
 
 <!-- SSR-safe data-theme attribute -->
-<div class="app-shell" data-theme={g.theme.value}>
+<div class="app-shell" data-theme={config.theme.value}>
 	<!-- Optional: Navigation Header -->
 	<header class="extension-header">
 		<div class="header-grid">
@@ -57,7 +57,7 @@
 		<div class="flex-between">
 			<p class="text-small">© 2025 Extenzioneer</p>
 			<div class="flex items-center gap-2">
-				<span class="text-small">Theme: {g.theme.value}</span>
+				<span class="text-small">Theme: {config.theme.value}</span>
 			</div>
 		</div>
 	</footer>

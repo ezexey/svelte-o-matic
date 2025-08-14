@@ -3,6 +3,11 @@ import { type Theme, writer, reader, manager } from '$lib/stores/theme';
 
 const privet = { loaded: false };
 export const app = {
+	init: (reload = false) => {
+		if (privet.loaded && !reload) return;
+		corio.api.setBaseUrl('http://127.0.0.1:3042');
+		corio.core.Client.I.setBaseUrl('http://127.0.0.1:3042');
+	},
 	client: {
 		api: corio.api,
 		i: corio.core.Client.I,
@@ -17,19 +22,14 @@ export const app = {
 				}
 			})
 	},
-	init: (reload = false) => {
-		if (privet.loaded && !reload) return;
-		corio.api.setBaseUrl('http://127.0.0.1:3042');
-		corio.core.Client.I.setBaseUrl('http://127.0.0.1:3042');
-	}
 };
 
-export const g = $state({
+export const config = $state({
 	theme: { writer, reader, value: 'light' as Theme },
 	mountain: () => {
-		const cleanup = manager.init((theme) => (g.theme.value = theme));
-		return () => {
-			cleanup();
-		};
-	}
+		const cleanup = manager.init((theme) => (config.theme.value = theme));
+			return () => {
+				cleanup();
+			};
+		}
 });

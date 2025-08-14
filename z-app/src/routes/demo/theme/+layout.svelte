@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { manager, THEMES } from '$lib/stores/theme';
 	import { corio } from '$lib';
-	import { g } from '../../state.svelte.js';
+	import { config } from '../../../app.svelte.js';
 	// Demo state
 	let message = $state('');
 	let isLoading = $state(false);
@@ -9,9 +9,9 @@
 	// Reactive values
 	
 	let { children } = $props();
-	const themeWriter = $derived(g.theme.writer);
-	const themeReader = $derived(g.theme.reader);
-	const isDarkMode = $derived(g.theme.value === THEMES.DARK);
+	const themeWriter = $derived(config.theme.writer);
+	const themeReader = $derived(config.theme.reader);
+	const isDarkMode = $derived(config.theme.value === THEMES.DARK);
 
 	// Demo functions
 	const simulateLoading = async () => {
@@ -65,7 +65,7 @@
 			Set Dark Test
 		</button>
 		<p style="margin: 0.5rem 0; color: #666; font-size: 14px;">
-			Current: {$themeWriter} | Applied: {g.theme.reader} | Value: {g.theme.value}
+			Current: {$themeWriter} | Applied: {config.theme.reader} | Value: {config.theme.value}
 		</p>
 	</div>
 
@@ -75,16 +75,16 @@
 		<div class="grid-2 gap-4">
 			<div>
 				<p class="text-small mb-2">Selected Theme:</p>
-				<div class="badge badge-primary">{g.theme.value}</div>
+				<div class="badge badge-primary">{config.theme.value}</div>
 			</div>
 			<div>
 				<p class="text-small mb-2">Applied Theme:</p>
 				<div
-					class="badge {g.theme.value === THEMES.DARK
+					class="badge {config.theme.value === THEMES.DARK
 						? 'bg-gray-800 text-white'
 						: 'bg-gray-100 text-gray-800'}"
 				>
-					{g.theme.reader}
+					{config.theme.reader}
 				</div>
 			</div>
 		</div>
@@ -111,7 +111,7 @@
 				<div class="flex flex-wrap gap-2">
 					{#each Object.values(THEMES) as themeOption}
 						<button
-							class="btn {g.theme.value === themeOption ? 'btn-primary' : 'btn-secondary'}"
+							class="btn {config.theme.value === themeOption ? 'btn-primary' : 'btn-secondary'}"
 							onclick={() => manager.setTheme(themeOption)}
 						>
 							{themeOption}
