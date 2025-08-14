@@ -8,6 +8,10 @@
 	onMount(g.mountain);
 </script>
 
+<svelte:head>
+	<title>Client Demo - Platformatic</title>
+</svelte:head>
+
 {#if navigating.to}
   <p>loading...</p>
 {:else}

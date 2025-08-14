@@ -12,9 +12,7 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
-	<title>Musketeers</title>	
-	<meta name="description" content="Platformatic + SvelteKit + Twitch + Extension" />
+	<link rel="icon" type="image/svg+xml" href={favicon} />
 </svelte:head>
 
 <!-- SSR-safe data-theme attribute -->
