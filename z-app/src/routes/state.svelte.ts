@@ -6,8 +6,8 @@ export const app = {
 	client: {
 		api: corio.api,
 		i: corio.core.Client.I,
-		getMovies: async (fetcher: typeof fetch, request: Partial<corio.Api.GetMoviesRequest> = {}) => {
-			const response = await corio.core.Client.I.get({
+		getMovies: async (fetcher: typeof fetch, request: Partial<corio.Api.GetMoviesRequest> = {}) =>
+			corio.core.Client.I.get({
 				endpoint: '/movies',
 				fetcher,
 				request: {
@@ -15,11 +15,7 @@ export const app = {
 					limit: 20,
 					...request // Allow overriding defaults
 				}
-			});
-
-			console.log('Movies:', response);
-			return response;
-		}
+			})
 	},
 	init: (reload = false) => {
 		if (privet.loaded && !reload) return;
