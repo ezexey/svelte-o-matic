@@ -47,30 +47,33 @@ export interface Opts<T> {
 
 export class Client {
   private static instance?: Client;
-  private baseUrl?: string;
-  private defaultHeaders: Record<string, string>;
-
-  private constructor() {
-    this.defaultHeaders = { "Content-type": "application/json; charset=utf-8" };
-  }
+  private url = '';
+  private init: RequestInit = {};
+  private headers: Record<string, string> = { "Content-type": "application/json; charset=utf-8" };
+  private constructor() {}
 
   static get I(): Client {
     return (Client.instance ??= new Client());
   }
 
-  setBaseUrl(input: string) {
-    this.baseUrl = input;
+  setUrl(url: string) {
+    this.url = url;
   }
 
+  setInit(init: RequestInit) {
+    this.init = init;
+  }
+  
   setAuthBearer(token: string) {
-    this.defaultHeaders["Authorization"] = `Bearer ${token}`;
+    this.headers["Authorization"] = `Bearer ${token}`;
   }
 
-  private async request<T>(
-    input: RequestInfo | URL,
-    fetcher: typeof fetch,
-    init?: RequestInit
-  ): Promise<T> {
+  setHeaders(headers: Record<string, string>, override = false) {
+    this.headers = override ? headers : { ...this.headers, ...headers };
+  }
+
+
+  async request<T>(input: RequestInfo | URL, fetcher: typeof fetch, init?: RequestInit): Promise<T> {
     const response = await fetcher(input, init);
     if (!response.ok) throw new Error(`HTTP error! status: ${JSON.stringify(response)}`);
     return await response.json();
@@ -91,13 +94,14 @@ export class Client {
       });
 
       return this.request<GetResponse<E, M>>(
-        new URL(`${opts.endpoint}/?${query}`, this.baseUrl),
+        new URL(`${opts.endpoint}/?${query}`, this.url),
         opts.fetcher || fetch,
         {
           method: method,
-          headers: { ...this.defaultHeaders, ...opts.headers },
+          headers: { ...this.headers, ...opts.headers },
           body: opts.body ? JSON.stringify(opts.body) : undefined,
           signal: opts.timeout ? AbortSignal.timeout(opts.timeout) : undefined,
+          ...this.init
         }
       );
     };

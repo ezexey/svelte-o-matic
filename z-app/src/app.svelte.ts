@@ -6,7 +6,7 @@ export const app = {
 	init: (reload = false) => {
 		if (privet.loaded && !reload) return;
 		corio.api.setBaseUrl('http://127.0.0.1:3042');
-		corio.core.Client.I.setBaseUrl('http://127.0.0.1:3042');
+		corio.core.Client.I.setUrl('http://127.0.0.1:3042');
 	},
 	client: {
 		api: corio.api,
