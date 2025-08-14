@@ -7,7 +7,11 @@
 	let isLoading = $state(false);
 
 	// Reactive values
-	const isCurrentlyDark = $derived(g.theme.value === THEMES.DARK);
+	
+	let { children } = $props();
+	const themeWriter = $derived(g.theme.writer);
+	const themeReader = $derived(g.theme.reader);
+	const isDarkMode = $derived(g.theme.value === THEMES.DARK);
 
 	// Demo functions
 	const simulateLoading = async () => {
@@ -16,8 +20,8 @@
 
 		await corio.delay(3000, async () => {
 			isLoading = false;
-			message = `Operation completed in ${g.theme.writer} mode!`;
-			await corio.delay(1000);
+			message = `Operation completed in ${$themeReader} mode!`;
+			await corio.delay(3000);
 			message = '';
 		});
 	};
@@ -34,8 +38,6 @@
 		await corio.delay(3000);
 		message = '';
 	};
-
-	let { children } = $props();
 </script>
 
 <div class="space-y-6">
@@ -63,7 +65,7 @@
 			Set Dark Test
 		</button>
 		<p style="margin: 0.5rem 0; color: #666; font-size: 14px;">
-			Current: {JSON.stringify(g.theme.writer)} | Applied: {g.theme.reader} | Value: {g.theme.value}
+			Current: {$themeWriter} | Applied: {g.theme.reader} | Value: {g.theme.value}
 		</p>
 	</div>
 
@@ -220,10 +222,10 @@
 
 		<div class="space-y-2">
 			<p class="text-body">
-				🎨 Current mode: <strong>{isCurrentlyDark ? 'Dark' : 'Light'}</strong>
+				🎨 Current mode: <strong>{isDarkMode ? 'Dark' : 'Light'}</strong>
 			</p>
 			<p class="text-body">
-				{#if isCurrentlyDark}
+				{#if isDarkMode}
 					🌙 Perfect for late-night streaming sessions
 				{:else}
 					☀️ Great for daytime content creation
