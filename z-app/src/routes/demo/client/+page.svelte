@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 	import { navigating } from '$app/state';
 	import { onMount } from 'svelte';
-	import { g } from '../state.svelte';
+	import { g } from '../../state.svelte';
 
 	let { data }: { data: PageData } = $props();
 	onMount(g.mountain);

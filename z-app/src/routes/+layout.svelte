@@ -13,7 +13,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>Extenzion</title>
+	<title>Musketeers</title>	
 	<meta name="description" content="Platformatic + SvelteKit + Twitch + Extension" />
 </svelte:head>
 
@@ -24,15 +24,18 @@
 		<div class="header-grid">
 			<!-- Left: Title -->
 			<div class="header-left">
-				<h1 class="heading-secondary">Extenzion</h1>
+				<h1 class="heading-secondary">Adapt</h1>
 			</div>
 
 			<!-- Right: Navigation -->
 			<div class="header-right">
 				<nav class="items-center gap-2 sm:flex">
 					<a href="/" class="nav-link {page.url.pathname === '/' ? 'active' : ''}"> Home </a>
-					<a href="/panel" class="nav-link {page.url.pathname === '/panel' ? 'active' : ''}">
-						Panel
+					<a href="/demo/client" class="nav-link {page.url.pathname === '/demo/client' ? 'active' : ''}">
+						Client
+					</a>
+					<a href="/demo/theme" class="nav-link {page.url.pathname === '/demo/theme' ? 'active' : ''}">
+						Theme
 					</a>
 				</nav>
 			</div>

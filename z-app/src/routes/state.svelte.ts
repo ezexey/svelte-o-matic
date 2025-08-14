@@ -1,27 +1,18 @@
-import {
-	type AppliedTheme,
-	theme,
-	appliedTheme,
-	applyThemeToDocument,
-	themeManager
-} from '$lib/stores/theme';
+import { coreo } from '$lib';
+import { type Theme, writer, reader, manager } from '$lib/stores/theme';
+
+export const app = { loaded: false };
 
 export const g = $state({
-	theme: {
-		current: theme,
-		applied: appliedTheme,
-		value: 'light' as AppliedTheme
+	theme: { writer, reader, value: 'light' as Theme },
+	init: (reload = false) => {
+		if(app.loaded && !reload) return;
+		coreo.api.setBaseUrl('http://127.0.0.1:3042');
 	},
 	mountain: () => {
-		const cleanup = themeManager.init();
-		// Subscribe to appliedTheme changes (only in browser)
-		const unsubscribe = g.theme.applied.subscribe((themeToApply) => {
-			g.theme.value = themeToApply;
-			applyThemeToDocument(themeToApply);
-		});
+		const cleanup = manager.init((theme) => (g.theme.value = theme));
 		return () => {
-			cleanup?.();
-			unsubscribe();
+			cleanup();
 		};
 	}
 });
