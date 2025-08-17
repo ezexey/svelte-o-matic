@@ -1,4 +1,4 @@
-import type { Api } from "./index";
+import type { Types as Api } from "../index";
 
 interface ApiTypeRegistry {
   "/movies": {
