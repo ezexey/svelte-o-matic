@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { manager, THEMES } from '$lib/stores/theme';
-	import { corio } from '$lib';
+	import { Corio } from '$lib';
 	import { config } from '../../../app.svelte.js';
 	// Demo state
 	let message = $state('');
@@ -18,10 +18,10 @@
 		isLoading = true;
 		message = 'Loading...';
 
-		await corio.delay(3000, async () => {
+		await Corio.delay(3000, async () => {
 			isLoading = false;
 			message = `Operation completed in ${$themeReader} mode!`;
-			await corio.delay(3000);
+			await Corio.delay(3000);
 			message = '';
 		});
 	};
@@ -35,7 +35,7 @@
 		};
 		message = notifications[type] || 'Unknown notification';
 
-		await corio.delay(3000);
+		await Corio.delay(3000);
 		message = '';
 	};
 </script>

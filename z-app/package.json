@@ -31,7 +31,8 @@
 	},
 	"dependencies": {
 		"@platformatic/client": "^2.74.1",
-		"@sveltejs/adapter-static": "^3.0.9"
+		"@sveltejs/adapter-static": "^3.0.9",
+		"zod": "^4.0.17"
 	},
 	"workspaces": [
 		"libz/twitch"

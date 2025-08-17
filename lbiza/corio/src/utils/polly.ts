@@ -4,5 +4,7 @@ export const withTimeout = <T>(promise: Promise<T>, timeout = 1000, error = new 
 };
 
 // Add a helper function to invokable task.delay
-export const delay = async (ms: number, then = () => {}) =>
-  await new Promise((resolve) => setTimeout(resolve, ms)).then(then);
+export async function delay<T>(ms: number, then: () => T = () => ({} as T)) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+  return then();
+}

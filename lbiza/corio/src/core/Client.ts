@@ -1,4 +1,4 @@
-import type * as Api from "../api/api-types";
+import type { Api } from "./index";
 
 interface ApiTypeRegistry {
   "/movies": {
@@ -113,4 +113,3 @@ export class Client {
   put = this.call("PUT");
   delete = this.call("DELETE");
 }
-export { Api };

@@ -1,0 +1,59 @@
+<script lang="ts">
+	import { Corio } from '$lib';
+	import { updateMovie, getMovie, deleteMovie } from '$lib/stores/movies.remote';
+
+	let { id, title = $bindable() }: { id?: number | null; title?: string | null } = $props();
+	let { loading, message } = $state({ loading: false, message: '' });
+</script>
+
+<div class="flex items-center gap-4">
+	<input class="input" bind:value={title} />
+	<button
+		class="btn btn-secondary"
+		disabled={loading}
+		onclick={async () => {
+			try {
+				loading = true;
+				await updateMovie({ id, title });
+				message = 'Movie updated successfully';
+			} catch (error) {
+				message = `Error updating movie: ${error}`;
+			} finally {
+				loading = false;
+				const movie = await getMovie(id);
+				id = movie.id;
+				title = movie.title;
+				message = await Corio.delay(3000, () => '');
+			}
+		}}>
+		{#if loading}
+			<span class="loading"></span>
+		{/if}
+		Update
+	</button>
+	<button
+		class="btn btn-ghost"
+		disabled={loading}
+		onclick={async () => {
+			try {
+				loading = true;
+				await deleteMovie(id);
+				message = 'Movie deleted successfully';
+			} catch (error) {
+				message = `Error deleting movie: ${error}`;
+			} finally {
+				loading = false;
+				message = await Corio.delay(3000, () => '');
+			}
+		}}>
+		{#if loading}
+			<span class="loading"></span>
+		{/if}
+		Delete
+	</button>
+</div>
+{#if message}
+	<div class="notification notification-info fade-in">
+		{message}
+	</div>
+{/if}
