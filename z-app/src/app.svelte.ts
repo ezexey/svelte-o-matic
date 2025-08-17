@@ -10,17 +10,16 @@ export const app = {
 	},
 	client: {
 		api: Corio.api,
-		i: Corio.core.Client.I,
-		movies: async (fetcher: typeof fetch, request: Partial<Corio.Types.GetMoviesRequest> = {}) =>
-			Corio.core.Client.I.get({
-				endpoint: '/movies',
-				fetcher,
-				request: {
+		movies: async (req?: Partial<Corio.Types.GetMoviesRequest>, fetcher?: typeof fetch) =>
+			Corio.core.Client.I.get(
+				'/movies/',
+				{
 					offset: 0,
 					limit: 20,
-					...request // Allow overriding defaults
-				}
-			})
+					...req // Allow overriding defaults
+				},
+				{ fetcher }
+			)
 	}
 };
 app.init();

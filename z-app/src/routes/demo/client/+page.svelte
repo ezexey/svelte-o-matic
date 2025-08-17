@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { config } from '../../../app.svelte';
 	import Movie from '$lib/features/Movie.svelte';
-	import { getMovies, createMovie } from '$lib/stores/movies.remote';
+	import { getMovies, createMovie } from '$lib/features/movies.remote';
 
 	let loading = $state(false);
 	onMount(config.mountain);
@@ -33,7 +33,9 @@
 	<h2>Movies Remote</h2>
 	<ul class="space-y-4">
 		{#each await getMovies() as { id, title }}
-			<Movie {id} {title} />
+			{#if id}
+				<Movie {id} {title} />
+			{/if}
 		{/each}
 	</ul>
 	{#snippet pending()}

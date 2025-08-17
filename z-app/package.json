@@ -35,6 +35,6 @@
 		"zod": "^4.0.17"
 	},
 	"workspaces": [
-		"libz/twitch"
+		"lbiza/*"
 	]
 }

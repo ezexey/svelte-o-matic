@@ -1,7 +1,7 @@
 import type { Types as Api } from "../index";
 
 interface ApiTypeRegistry {
-  "/movies": {
+  "/movies/": {
     GET: { request: Api.GetMoviesRequest; response: Api.GetMoviesResponses };
     POST: { request: Api.CreateMovieRequest; response: Api.CreateMovieResponses };
     PUT: { request: Api.UpdateMoviesRequest; response: Api.UpdateMoviesResponses };
@@ -36,18 +36,15 @@ type GetResponse<E extends keyof ApiTypeRegistry, M extends HttpMethod> = GetApi
   ? R
   : never;
 
-export interface Opts<T> {
-  endpoint: string;
-  request?: T;
+export interface Opts {
   headers?: Record<string, string>;
-  body?: any;
   timeout?: number;
   fetcher?: typeof fetch;
 }
 
 export class Client {
   private static instance?: Client;
-  private url = '';
+  private url = "";
   private init: RequestInit = {};
   private headers: Record<string, string> = { "Content-type": "application/json; charset=utf-8" };
   private constructor() {}
@@ -72,38 +69,45 @@ export class Client {
     this.headers = override ? headers : { ...this.headers, ...headers };
   }
 
-
-  async request<T>(input: RequestInfo | URL, fetcher: typeof fetch, init?: RequestInit): Promise<T> {
+  async request<T>(input: URL | RequestInfo, fetcher = fetch, init?: RequestInit): Promise<T> {
     const response = await fetcher(input, init);
-    if (!response.ok) throw new Error(`HTTP error! status: ${JSON.stringify(response)}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status} ${await response.text()}`);
     return await response.json();
   }
 
   // Generic method builder to reduce repetition
   private call<M extends HttpMethod>(method: M) {
-    return <E extends keyof ApiTypeRegistry>(
-      opts: M extends keyof ApiTypeRegistry[E]
-        ? Omit<Opts<GetRequest<E, M>>, "method"> & { endpoint: E }
-        : never
-    ): Promise<GetResponse<E, M>> => {
+    return <E extends keyof ApiTypeRegistry & string>(endpoint: E, req?: GetRequest<E, M>, opts?: Opts) => {
+      // Process path parameters
+      let request = req as Record<string, any>;
+
+      endpoint
+        .match(/:(\w+)/g)
+        ?.map((match) => match.substring(1))
+        .forEach((param) => {
+          if (request[param] === undefined) return;
+          // Replace :param with actual value
+          endpoint = endpoint.replace(`:${param}`, encodeURIComponent(request[param])) as E;
+          // Remove from remaining params so it's not added to query string
+          delete request[param];
+        });
+
+      // Build query string from remaining parameters
       const query = new URLSearchParams();
-      Object.entries(opts.request || {}).forEach(([key, value]) => {
+      Object.entries(request).forEach(([key, value]) => {
         if (!value) return;
         if (Array.isArray(value)) value.forEach((v) => query.append(key, v));
         else query.append(key, value.toString());
       });
 
-      return this.request<GetResponse<E, M>>(
-        new URL(`${opts.endpoint}/?${query}`, this.url),
-        opts.fetcher || fetch,
-        {
-          method: method,
-          headers: { ...this.headers, ...opts.headers },
-          body: opts.body ? JSON.stringify(opts.body) : undefined,
-          signal: opts.timeout ? AbortSignal.timeout(opts.timeout) : undefined,
-          ...this.init
-        }
-      );
+      // Build final URL
+      return this.request<GetResponse<E, M>>(new URL(`${endpoint}?${query}`, this.url), opts?.fetcher, {
+        method,
+        headers: { ...this.headers, ...opts?.headers },
+        body: method === "GET" ? undefined : JSON.stringify(req),
+        signal: opts?.timeout ? AbortSignal.timeout(opts.timeout) : undefined,
+        ...this.init,
+      });
     };
   }
 

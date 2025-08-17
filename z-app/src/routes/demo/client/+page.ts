@@ -5,6 +5,6 @@ import { app } from '../../../app.svelte';
 export const load: PageLoad = async ({ fetch }) => {
 	return {
 		theme: 'light' as Theme,
-		movies: await app.client.movies(fetch, { 'orderby.id': 'asc' })
+		movies: await app.client.movies({ 'orderby.id': 'asc' }, fetch)
 	};
 };

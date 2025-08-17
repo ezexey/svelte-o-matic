@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { Corio } from '$lib';
-	import { updateMovie, getMovie, deleteMovie } from '$lib/stores/movies.remote';
+	import { updateMovie, getMovie, deleteMovie } from '$lib/features/movies.remote';
+	import { error } from '@sveltejs/kit';
 
-	let { id, title = $bindable() }: { id?: number | null; title?: string | null } = $props();
+	let { id, title = $bindable() }: { id: number; title?: string | null } = $props();
 	let { loading, message } = $state({ loading: false, message: '' });
 </script>
 
@@ -13,16 +14,17 @@
 		disabled={loading}
 		onclick={async () => {
 			try {
+				if (!title) error(400, 'Movie title cannot be empty');
 				loading = true;
 				await updateMovie({ id, title });
 				message = 'Movie updated successfully';
 			} catch (error) {
 				message = `Error updating movie: ${error}`;
 			} finally {
-				loading = false;
 				const movie = await getMovie(id);
-				id = movie.id;
+				id = movie.id!;
 				title = movie.title;
+				loading = false;
 				message = await Corio.delay(3000, () => '');
 			}
 		}}>
@@ -36,6 +38,7 @@
 		disabled={loading}
 		onclick={async () => {
 			try {
+				if (!id) error(400, 'Movie ID is required for deletion');
 				loading = true;
 				await deleteMovie(id);
 				message = 'Movie deleted successfully';
