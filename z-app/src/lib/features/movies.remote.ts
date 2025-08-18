@@ -9,7 +9,7 @@ export const getMovies = query(async () => {
 	return movies;
 });
 export const getMovie = query(z.number(), async (id) => {
-	const movie = Corio.core.Client.I.get('/movies/:id', { id });
+	const movie = Corio.Client.I.get('/movies/:id', { id });
 	return movie;
 });
 
@@ -18,17 +18,17 @@ export const createMovie = form(async (data) => {
 	if (!title) error(400, 'Title is required');
 
 	// await app.client.api.createMovie({ title });
-	Corio.core.Client.I.post('/movies/', { title });
+	Corio.Client.I.post('/movies/', { title });
 	return { success: true };
 });
 
 export const updateMovie = command(z.object({ id: z.number(), title: z.string() }), async (data) => {
 	const { id, title } = data;
 	// await app.client.api.updateMovie({ id, title });
-	Corio.core.Client.I.put('/movies/:id', { id, title });
+	Corio.Client.I.put('/movies/:id', { id, title });
 });
 
 export const deleteMovie = command(z.number(), async (id) => {
 	// await app.client.api.deleteMovies({ id: validate.id(id) });
-	Corio.core.Client.I.delete('/movies/:id', { id });
+	Corio.Client.I.delete('/movies/:id', { id });
 });

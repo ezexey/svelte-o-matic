@@ -1,6 +1,6 @@
-import type { Types as Api } from "../index";
+import type { Api as Api } from "../index";
 
-interface ApiTypeRegistry {
+export interface ApiTypeRegistry {
   "/movies/": {
     GET: { request: Api.GetMoviesRequest; response: Api.GetMoviesResponses };
     POST: { request: Api.CreateMovieRequest; response: Api.CreateMovieResponses };

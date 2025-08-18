@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "module": "es6",
+    "module": "ESNext",
+    "target": "es2024",
     "esModuleInterop": true,
-    "target": "es2020",
     "sourceMap": true,
     "pretty": true,
     "noEmitOnError": true,

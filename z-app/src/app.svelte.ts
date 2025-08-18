@@ -6,12 +6,12 @@ export const app = {
 	init: (reload = false) => {
 		if (privet.loaded && !reload) return;
 		Corio.api.setBaseUrl('http://127.0.0.1:3042');
-		Corio.core.Client.I.setUrl('http://127.0.0.1:3042');
+		Corio.Client.I.setUrl('http://127.0.0.1:3042');
 	},
 	client: {
 		api: Corio.api,
-		movies: async (req?: Partial<Corio.Types.GetMoviesRequest>, fetcher?: typeof fetch) =>
-			Corio.core.Client.I.get(
+		movies: async (req?: Partial<Corio.Api.GetMoviesRequest>, fetcher?: typeof fetch) =>
+			Corio.Client.I.get(
 				'/movies/',
 				{
 					offset: 0,

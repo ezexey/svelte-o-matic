@@ -25,7 +25,7 @@
 				id = movie.id!;
 				title = movie.title;
 				loading = false;
-				message = await Corio.delay(3000, () => '');
+				message = await Corio.polly.delay(3000, () => '');
 			}
 		}}>
 		{#if loading}
@@ -46,7 +46,7 @@
 				message = `Error deleting movie: ${error}`;
 			} finally {
 				loading = false;
-				message = await Corio.delay(3000, () => '');
+				message = await Corio.polly.delay(3000, () => '');
 			}
 		}}>
 		{#if loading}

@@ -18,10 +18,10 @@
 		isLoading = true;
 		message = 'Loading...';
 
-		await Corio.delay(3000, async () => {
+		await Corio.polly.delay(3000, async () => {
 			isLoading = false;
 			message = `Operation completed in ${$themeReader} mode!`;
-			await Corio.delay(3000);
+			await Corio.polly.delay(3000);
 			message = '';
 		});
 	};
@@ -35,7 +35,7 @@
 		};
 		message = notifications[type] || 'Unknown notification';
 
-		await Corio.delay(3000);
+		await Corio.polly.delay(3000);
 		message = '';
 	};
 </script>

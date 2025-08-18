@@ -12,18 +12,15 @@ const config = {
 		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 		adapter: adapter(),
-		experimental: {
-			remoteFunctions: true
-		},
-		csrf: {
-			checkOrigin: false // Disable CSRF checks for development; enable in production
-		}
+		csrf: { checkOrigin: false },
+		experimental: { remoteFunctions: true },
+		csp: { directives: { 'script-src': ['self', 'unsafe-inline'] } },
 	},
 	compilerOptions: {
 		experimental: {
 			async: true
 		}
-	},
+	}
 };
 
 export default config;
