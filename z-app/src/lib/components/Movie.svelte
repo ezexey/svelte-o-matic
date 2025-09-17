@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Corio } from '$lib';
-	import { updateMovie, getMovie, deleteMovie } from '$lib/features/movies.remote';
+	import { updateMovie, getMovie, deleteMovie } from '$lib/components/movies.remote';
 	import { error } from '@sveltejs/kit';
 
 	let { id, title = $bindable() }: { id: number; title?: string | null } = $props();

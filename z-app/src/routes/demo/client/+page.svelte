@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { config } from '../../../app.svelte';
-	import Movie from '$lib/features/Movie.svelte';
-	import { getMovies, createMovie } from '$lib/features/movies.remote';
+	import Movie from '$lib/components/Movie.svelte';
+	import { getMovies, createMovie } from '$lib/components/movies.remote';
 
 	let loading = $state(false);
 	onMount(config.mountain);

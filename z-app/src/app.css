@@ -160,6 +160,13 @@
   flex-direction: column;
 }
 
+/* Add a class for full-height pages */
+.full-height-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 /* Svelte Component Helpers */
 .svelte-component {
   /* Base styles for Svelte components */
@@ -281,7 +288,7 @@
 
 .route-header {
   /* Page header */
-  padding: 1rem;
+  padding: 0.5rem 0rem;
   border-bottom: 1px solid var(--border-light);
   background-color: var(--bg-secondary);
 }
@@ -661,7 +668,7 @@
 .nav-link {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem;
   color: var(--text-secondary);
   text-decoration: none;
   border-radius: 0.375rem;
@@ -671,12 +678,10 @@
 
 .nav-link:hover {
   color: var(--text-primary);
-  background-color: var(--bg-tertiary);
 }
 
 .nav-link.active {
   color: var(--twitch-purple);
-  background-color: rgba(145, 70, 255, 0.1);
   font-weight: 500;
 }
 
@@ -709,7 +714,10 @@
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.25rem;
+  flex: 1;  /* Add this - makes container take full height */
+  display: flex;  /* Add this */
+  flex-direction: column;  /* Add this */
 }
 
 .layout-wrapper {
@@ -921,7 +929,7 @@
 
 /* Common Twitch Extension Layouts */
 .extension-header {
-  padding: 1rem;
+  padding: 0.5rem 0rem 0; /* was 1rem; now no bottom padding */
   border-bottom: 1px solid var(--border-light);
   background-color: var(--bg-secondary);
 }

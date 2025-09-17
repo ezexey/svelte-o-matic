@@ -8,9 +8,6 @@ export type Theme = typeof THEMES.LIGHT | typeof THEMES.DARK;
 // props
 const mediaQuery = typeof window === 'undefined' ? null : window.matchMedia('(prefers-color-scheme: dark)');
 
-// funks
-const handleSystemThemeChange = () => writer.update((current: Theme) => current);
-
 // stores
 export const writer: Writable<Theme> = writable(
 	(() => (mediaQuery?.matches ? THEMES.DARK : THEMES.LIGHT))()
@@ -24,6 +21,7 @@ export const manager = {
 		if (!mediaQuery) return () => {}; // No media query support
 
 		// Handle system theme changes when in auto mode
+		const handleSystemThemeChange = () => writer.update((current: Theme) => current);
 		mediaQuery.addEventListener('change', handleSystemThemeChange);
 		const unsubscribe = writer.subscribe((theme) => {
 			subscription(theme);
