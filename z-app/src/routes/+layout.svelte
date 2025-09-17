@@ -32,9 +32,6 @@
 					<a href="/demo/client" class="nav-link {page.url.pathname === '/demo/client' ? 'active' : ''}">
 						Client
 					</a>
-					<a href="/demo/theme" class="nav-link {page.url.pathname === '/demo/theme' ? 'active' : ''}">
-						Theme
-					</a>
 				</nav>
 			</div>
 		</div>

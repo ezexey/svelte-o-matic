@@ -1,17 +1,17 @@
-import { Corio } from '$lib';
+import { Corio, createClient } from '$lib';
 import { type Theme, writer, reader, manager } from '$lib/stores/theme';
 
-const privet = { loaded: false };
+const privet = { loaded: false, client: createClient('http://127.0.0.1:3042') };
 export const app = {
 	init: (reload = false) => {
 		if (privet.loaded && !reload) return;
 		Corio.api.setBaseUrl('http://127.0.0.1:3042');
-		Corio.Client.I.setUrl('http://127.0.0.1:3042');
 	},
 	client: {
 		api: Corio.api,
+		i: privet.client,
 		movies: async (req?: Partial<Corio.Api.GetMoviesRequest>, fetcher?: typeof fetch) =>
-			Corio.Client.I.get(
+			privet.client.get(
 				'/movies/',
 				{
 					offset: 0,

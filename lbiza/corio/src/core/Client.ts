@@ -42,31 +42,14 @@ export interface Opts {
   fetcher?: typeof fetch;
 }
 
-export class Client {
-  private static instance?: Client;
-  private url = "";
-  private init: RequestInit = {};
-  private headers: Record<string, string> = { "Content-type": "application/json; charset=utf-8" };
-  private constructor() {}
-
-  static get I(): Client {
-    return (Client.instance ??= new Client());
-  }
-
-  setUrl(url: string) {
-    this.url = url;
-  }
-
-  setInit(init: RequestInit) {
-    this.init = init;
-  }
+class Client {
+  url = "";
+  init: RequestInit = {};
+  headers: Record<string, string> = {};
+  constructor() {}
 
   setAuthBearer(token: string) {
     this.headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  setHeaders(headers: Record<string, string>, override = false) {
-    this.headers = override ? headers : { ...this.headers, ...headers };
   }
 
   async request<T>(input: URL | RequestInfo, fetcher = fetch, init?: RequestInit): Promise<T> {
@@ -101,13 +84,17 @@ export class Client {
       });
 
       // Build final URL
-      return this.request<GetResponse<E, M>>(new URL(`${endpoint}?${query}`, this.url), opts?.fetcher, {
-        method,
-        headers: { ...this.headers, ...opts?.headers },
-        body: method === "GET" ? undefined : JSON.stringify(req),
-        signal: opts?.timeout ? AbortSignal.timeout(opts.timeout) : undefined,
-        ...this.init,
-      });
+      return this.request<GetResponse<E, M>>(
+        new URL(`${endpoint}${method == "POST" ? "" : "?" + query}`, this.url),
+        opts?.fetcher,
+        {
+          ...this.init,
+          method,
+          headers: { ...this.headers, ...(opts?.headers || {}) },
+          body: method === "GET" ? undefined : JSON.stringify(req),
+          signal: opts?.timeout ? AbortSignal.timeout(opts.timeout) : undefined,
+        }
+      );
     };
   }
 
@@ -116,4 +103,14 @@ export class Client {
   post = this.call("POST");
   put = this.call("PUT");
   delete = this.call("DELETE");
+}
+
+export default function (
+  url: string,
+  headers: Record<string, string> = { "Content-type": "application/json; charset=utf-8" }
+) {
+  const client = new Client();
+  client.url = url;
+  client.headers = headers;
+  return client;
 }
